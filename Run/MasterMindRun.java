@@ -40,6 +40,7 @@ public class MasterMindRun{
 		prihlaseni();
 		createConnect();
 		RegOrLog();
+		
 	}
 	
 	public void RegOrLog() {
@@ -61,10 +62,10 @@ public class MasterMindRun{
 	public void prihlaseni() {
 		
 		System.out.println("'Zadej adresu serveru");
-		//String addr = sc.nextLine();
+//		String addr = sc.nextLine();
 		String addr = "127.0.0.1";
 		System.out.println("'Zadej port serveru");
-		//String port = sc.nextLine();
+//		String port = sc.nextLine();
 		String port = "22343";
 		logLogics.confirmDataInServerForm(addr, port);
 		
@@ -90,7 +91,6 @@ public class MasterMindRun{
 			netLog.setComm(comm);
 		} catch (NumberFormatException e) {
 
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Spatne");
 		}
