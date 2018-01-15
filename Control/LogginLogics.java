@@ -21,8 +21,8 @@ public class LogginLogics {
 	private String passwd;
 	private String passwd2;
 
-	private String serverAddres = "192.168.40.131";
-	private int serverPort = 1111;
+	private String serverAddres = "127.0.0.1";
+	private int serverPort = 22343;
 
 	private MasterMindRun mMR;
 	private TCPComm comm;
@@ -115,24 +115,19 @@ public class LogginLogics {
 		
 		 String[] pom = addres.split(Pattern.quote("."));
 		 if (addres.length() == 0) {
-			/*Alert alert = new Alert(javafx.scene.control.Alert.AlertType.WARNING);
-			alert.setTitle("Sign error");
-			alert.setHeaderText("No IP address!");
-			alert.setContentText("You must fill IP address of server !");
-			alert.showAndWait();*/
 			 
-			 // vypsat text chyby
-
+			System.out.println("Chyba prihlaseni.");
+			System.out.println("Neni zadana IP adresa!");
+			System.out.println("Zadej spravnou IP adresu serveru!");
+			mMR.prihlaseni();
 		}else if(!addres.contains("localhost")){
 			
 			if (pom.length < 4 || confirmAddressBlock(pom)) {
-			/*	Alert alert = new Alert(javafx.scene.control.Alert.AlertType.WARNING);
-				alert.setTitle("Sign error");
-				alert.setHeaderText("Bad IP address!");
-				alert.setContentText("You must fill IP address in this style \" 127.0.0.1\"  !");
-				alert.showAndWait(); */
-				 // vypsat text chyby
-
+				
+				System.out.println("Chyba prihlaseni.");
+				System.out.println("Zadana spatna IP adresa!");
+				System.out.println("Zadej spravnou IP adresu serveru ve tvaru \"127.0.0.1\" !");
+				mMR.prihlaseni();
 			}else{
 				setServerAddres(addres);
 				return true;
@@ -150,19 +145,16 @@ public class LogginLogics {
 	 private boolean confirmAddressBlock(String[] pom) {
 		 int number;
 		 try{
-			 
 			 for (int i = 0; i < pom.length; i++) {				 
 				 number = Integer.parseInt(pom[i]);
 				 if(number > 255 ){
 					 return true;
 				 }
 			 }
-			 
 		 }catch(NumberFormatException e){
-			 System.out.println("Bad ip address format");
+			 System.out.println("Chybna IPv4 adresa.");
 			 return true;
 		 }
-		 
 		 
 		return false;
 	}
@@ -174,8 +166,9 @@ public class LogginLogics {
 	  */
 	public boolean serverPortConfirm(String port) {
 		if (port.length() == 0 || confirmPortNumber(port)) {
-			//Dopsat vypis
-
+			System.out.println("Spatne zadany port serveru!");
+			System.out.println("Zadej spravny port.");
+			mMR.prihlaseni();
 		}else {
 			this.serverPort = Integer.parseInt(port);
 			return true;
@@ -195,7 +188,7 @@ public class LogginLogics {
 			}
 			
 		}catch (NumberFormatException e) {
-			System.out.println("Bad type of port");
+			System.out.println("Spatny typ portu!");
 			return true;
 		}
 		
