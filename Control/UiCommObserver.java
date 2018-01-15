@@ -61,7 +61,7 @@ public class UiCommObserver implements ICommObserver {
 					netLog.checkConnect();
 					break;
 				case "Connect":
-					//mMR.setWellcomeWindow();
+					System.out.println("Navazano spojeni se serverem.");
 					break;
 
 				case "Reload":
@@ -81,6 +81,9 @@ public class UiCommObserver implements ICommObserver {
 						if (pomData[1].contains("yes")) {
 							lLog.setLog(true);
 							netLog.setName(action.getName());
+							System.out.println("Vitej ve hre hraci " + action.getName());
+							System.out.println("Ceka se na pripojeni dalsiho hrace.");
+							
 							//mMR.setWellcomeWindow();
 							// Dalsi krok po loginu 
 							
