@@ -64,11 +64,11 @@ public class MasterMindRun{
 	public void prihlaseni() {
 		
 		System.out.println("'Zadej adresu serveru");
-//		String addr = sc.nextLine();
-		String addr = "192.168.0.173";
+		String addr = sc.nextLine();
+//		String addr = "192.168.0.173";
 		System.out.println("'Zadej port serveru");
-//		String port = sc.nextLine();
-		String port = "22343";
+		String port = sc.nextLine();
+//		String port = "22343";
 		logLogics.confirmDataInServerForm(addr, port);
 		
 	}
