@@ -12,13 +12,14 @@ public class Actions {
 	private NetworkLogics netLogic;
 	
 	private String name;
+	private GameControl gameControl;
 	
-	
-	public Actions(MasterMindRun mMR, LogginLogics logLogic, NetworkLogics netLogic) {
+	public Actions(MasterMindRun mMR, LogginLogics logLogic, NetworkLogics netLogic, GameControl gameControl) {
 		this.mMR = mMR;
 		this.logLogic = logLogic;
 		this.sc = mMR.getSc();
 		this.netLogic = netLogic;
+		this.gameControl = gameControl;
 		
 	}
 	
@@ -53,6 +54,26 @@ public void prihlaseni() {
 		netLogic.sendSingForm(jmeno, heslo1);
 		
 	}
+
+public void provedAkciNaPozvani(String jmeno) {
+	
+	System.out.println("Hrac " + jmeno + " vas pozval do hry");
+	System.out.println("Pro prijeti zmacknete 1 pro odmitnuti 2");
+	
+	int volba = sc.nextInt();
+	
+	if (volba == 1) {
+		netLogic.challengeAccepted(jmeno);
+		gameControl.nastaveniHracihoPole(jmeno, false);
+		
+	}else if(volba == 2) {
+		netLogic.challengeRefuse(jmeno);
+	}else {
+		provedAkciNaPozvani(jmeno);
+	}
+	
+}
+
 
 
 public String getName() {

@@ -122,84 +122,84 @@ public class MessageControl {
 
 	public boolean gameControl(String[] pomData){
 		
-		if(pomData.length < 2) return false;
-		
-		switch (pomData[1]) {
-		case "colorResult":
-			
-			if (pomData[2].equals("R")) {
-				
-				if (pomData.length > 4)
-					return false;				
-				
-				if(!confirmResultColors(pomData[3])) return false;
-
-			} else {
-				if (pomData.length > 3)
-					return false;
-
-				if(!confirmResultColors(pomData[2])) return false;
-			}
-			
-			
-			break;
-		case "knobPanel":
-			if (pomData.length > 4)
-				return false;
-			if(!confirmColors(pomData[2], pomData[3])) return false;
-			break;
-		case "goodColors":
-			if (pomData.length > 4)
-				return false;
-			try {
-				int pom = Integer.parseInt(pomData[2]);
-				int pom1 = Integer.parseInt(pomData[3]);
-			} catch (NumberFormatException e) {
-				return false;
-			}
-
-			break;
-		case "greatColors":
-			if (pomData.length > 4)
-				return false;
-			try {
-				int pom = Integer.parseInt(pomData[2]);
-				int pom1 = Integer.parseInt(pomData[3]);
-			} catch (NumberFormatException e) {
-				return false;
-			}
-			break;
-		case "leave":
-			if (pomData.length > 4)
-				return false;
-			try {
-				int pom1 = Integer.parseInt(pomData[3]);
-			} catch (NumberFormatException e) {
-				return false;
-			}
-			break;
-		case "gameOver":
-			if (pomData.length > 2)
-				return false;
-			break;
-		case "gameDone":
-			if (pomData.length > 2)
-				return false;
-			break;
-		case "player":
-			if (pomData.length > 4)
-				return false;
-			break;
-			
-		case "colorAccept":
-			if (pomData.length > 2)
-				return false;
-			break;
-
-		default:
-			return false;
-		}
-		
+//		if(pomData.length < 2) return false;
+//		
+//		switch (pomData[1]) {
+//		case "colorResult":
+//			
+//			if (pomData[2].equals("R")) {
+//				
+//				if (pomData.length > 4)
+//					return false;				
+//				
+//				if(!confirmResultColors(pomData[3])) return false;
+//
+//			} else {
+//				if (pomData.length > 3)
+//					return false;
+//
+//				if(!confirmResultColors(pomData[2])) return false;
+//			}
+//			
+//			
+//			break;
+//		case "knobPanel":
+//			if (pomData.length > 4)
+//				return false;
+//			if(!confirmColors(pomData[2], pomData[3])) return false;
+//			break;
+//		case "goodColors":
+//			if (pomData.length > 4)
+//				return false;
+//			try {
+//				int pom = Integer.parseInt(pomData[2]);
+//				int pom1 = Integer.parseInt(pomData[3]);
+//			} catch (NumberFormatException e) {
+//				return false;
+//			}
+//
+//			break;
+//		case "greatColors":
+//			if (pomData.length > 4)
+//				return false;
+//			try {
+//				int pom = Integer.parseInt(pomData[2]);
+//				int pom1 = Integer.parseInt(pomData[3]);
+//			} catch (NumberFormatException e) {
+//				return false;
+//			}
+//			break;
+//		case "leave":
+//			if (pomData.length > 4)
+//				return false;
+//			try {
+//				int pom1 = Integer.parseInt(pomData[3]);
+//			} catch (NumberFormatException e) {
+//				return false;
+//			}
+//			break;
+//		case "gameOver":
+//			if (pomData.length > 2)
+//				return false;
+//			break;
+//		case "gameDone":
+//			if (pomData.length > 2)
+//				return false;
+//			break;
+//		case "player":
+//			if (pomData.length > 4)
+//				return false;
+//			break;
+//			
+//		case "colorAccept":
+//			if (pomData.length > 2)
+//				return false;
+//			break;
+//
+//		default:
+//			return false;
+//		}
+//		
 		return true;
 	}
 

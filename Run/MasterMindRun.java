@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import Control.Actions;
+import Control.GameControl;
 import Control.LogginLogics;
 import Control.NetworkLogics;
 import Control.UiCommObserver;
@@ -29,14 +30,15 @@ public class MasterMindRun{
 	private boolean isServer = true;
 	private Scanner sc;
 	private Actions actions;
+	private GameControl gameControl;
 	
 	public MasterMindRun() {
 		
 		this.logLogics = new LogginLogics(this);
 		this.netLog = new NetworkLogics(this, logLogics);
 		this.sc = new Scanner(System.in);
-		this.actions = new Actions(this, logLogics, netLog);
-		
+		this.gameControl = new GameControl(this, logLogics, netLog);
+		this.actions = new Actions(this, logLogics, netLog, gameControl);
 		prihlaseni();
 		createConnect();
 		RegOrLog();
@@ -63,7 +65,7 @@ public class MasterMindRun{
 		
 		System.out.println("'Zadej adresu serveru");
 //		String addr = sc.nextLine();
-		String addr = "127.0.0.1";
+		String addr = "192.168.0.173";
 		System.out.println("'Zadej port serveru");
 //		String port = sc.nextLine();
 		String port = "22343";
@@ -84,7 +86,7 @@ public class MasterMindRun{
 
 			comm = new TCPComm(logLogics.getServerAddres(), logLogics.getServerPort());
 
-			m_commObserver = new UiCommObserver(this, logLogics, netLog, actions);
+			m_commObserver = new UiCommObserver(this, logLogics, netLog, actions, gameControl);
 			comm.registerObserver(m_commObserver);
 
 			logLogics.setComm(comm);

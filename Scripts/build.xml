@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project default="create_run_jar" name="Create Runnable Jar for Project UPS-Logik">
+
+
+
+	<property name="dir.buildfile" value="." />
+
+	<property name="dir.jarfile" value="../APP" />
+
+	<property name="dir.src" value="../src" />
+
+	<property name="dir.bin" value="../bin" />
+
+
+
+	<target name="clean">
+
+		<delete dir="${dir.bin}" />
+
+	</target>
+
+	<target name="compile">
+
+		<mkdir dir="${dir.bin}" />
+
+		<javac srcdir="${dir.src}" destdir="${dir.bin}" includeantruntime="false">
+
+		</javac>
+
+	</target>
+
+
+
+	<target name="create_run_jar" depends="compile">
+
+
+
+		<jar destfile="${dir.jarfile}/UPS-Klient.jar" filesetmanifest="mergewithoutmain">
+
+			<manifest>
+
+				<attribute name="Main-Class" value="Run.MasterMindRun" />
+
+				<attribute name="Class-Path" value="." />
+
+			</manifest>
+
+			<fileset dir="${dir.buildfile}/${dir.bin}" />
+
+		</jar>
+
+	</target>
+
+</project>
