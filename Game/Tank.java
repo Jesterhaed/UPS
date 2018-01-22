@@ -46,8 +46,6 @@ public class Tank {
 			pole.getHraciPole()[x][y].addTank(this);
 			pole.getHraciPole()[x][y].setOdecet(100);;
 		}
-		
-		
 	}
 	
 	

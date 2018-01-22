@@ -53,10 +53,11 @@ public class HraciPole {
 				System.out.print(" |" + hraciPole[i][j] );
 				
 			}
+			System.out.print(" |");
 			System.out.println();
 	
 		}
-		System.out.println(" A| B| C| D| E| F ");
+		System.out.println("  A|  B|  C|  D|  E|  F ");
 	}
 	
 	
