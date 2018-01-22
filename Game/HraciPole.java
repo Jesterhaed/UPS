@@ -57,7 +57,7 @@ public class HraciPole {
 			System.out.println();
 	
 		}
-		System.out.println("  A|  B|  C|  D|  E|  F ");
+		System.out.println("   A|  B| C| D| E| F ");
 	}
 	
 	
