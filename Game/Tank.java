@@ -22,12 +22,12 @@ public class Tank {
 	public void nastavTankNaPole(HraciPole pole, int x, int y) {
 		
 		if (typ.toString().equals("HT")){
+			pole.getHraciPole()[x-2][y].addTank(this);
+			pole.getHraciPole()[x-2][y].setOdecet(0);;
 			pole.getHraciPole()[x-1][y].addTank(this);
-			pole.getHraciPole()[x-1][y].setOdecet(0);;
+			pole.getHraciPole()[x-1][y].setOdecet(25);;
 			pole.getHraciPole()[x][y].addTank(this);
-			pole.getHraciPole()[x][y].setOdecet(25);;
-			pole.getHraciPole()[x+1][y].addTank(this);
-			pole.getHraciPole()[x+1][y].setOdecet(50);;
+			pole.getHraciPole()[x][y].setOdecet(50);;
 		}else if(typ.toString().equals("MT")){
 			pole.getHraciPole()[x-1][y].addTank(this);
 			pole.getHraciPole()[x][y].addTank(this);
