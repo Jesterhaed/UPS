@@ -34,7 +34,8 @@ public class Actions {
 		String heslo2 = sc.nextLine();
 		
 		if(!logLogic.confirmDataInForm(jmeno, heslo1, heslo2)) {
-			registrace();
+			mMR.regOrLog();
+			return;
 		}
 		
 		netLogic.sendRegForm(jmeno, heslo1);
@@ -48,7 +49,8 @@ public void prihlaseni() {
 		System.out.println("Zadej heslo");
 		String heslo1 = sc.nextLine();	
 		if(!logLogic.confirmDataInForm(jmeno, heslo1)) {
-			prihlaseni();
+			mMR.regOrLog();
+			return;
 		}
 		name = jmeno;
 		netLogic.sendSingForm(jmeno, heslo1);
@@ -70,6 +72,7 @@ public void provedAkciNaPozvani(String jmeno) {
 		netLogic.challengeRefuse(jmeno);
 	}else {
 		provedAkciNaPozvani(jmeno);
+		return;
 	}
 	
 }

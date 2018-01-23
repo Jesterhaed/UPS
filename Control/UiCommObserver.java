@@ -29,9 +29,9 @@ public class UiCommObserver implements ICommObserver {
 		this.mMR = mMR;
 		this.lLog = lLog;
 		this.netLog = netLog;
-		this.messageCon = new MessageControl();
 		this.action = action;
 		this.gameControl = gameConrol;
+		this.messageCon = new MessageControl(gameConrol);
 	}
 
 	/**
@@ -59,24 +59,14 @@ public class UiCommObserver implements ICommObserver {
 			// serW.getConfirmBT().setDisable(true);
 			break;
 		case "NoServer":
-			// mMR.showNoServer();
+			System.out.println("Spojeni se serverem ztraceno");
 			break;
 		case "CheckConnect":
 			netLog.checkConnect();
 			break;
 		case "Connect":
 			System.out.println("Navazano spojeni se serverem.");
-			break;
-
-		case "Reload":
-			boolean challenger;
-			if (pomData[3].equals("0")) {
-				challenger = false;
-			} else {
-				challenger = true;
-			}
-			// mMR.showReloadGameMesage(Integer.parseInt(pomData[1]), pomData[2],
-			// challenger);
+			mMR.regOrLog();
 			break;
 		case "Registrace":
 			receiveRegistrace(pomData);
@@ -88,41 +78,35 @@ public class UiCommObserver implements ICommObserver {
 				netLog.setName(action.getName());
 				System.out.println("Vitej ve hre hraci " + action.getName());
 				netLog.getFreePlayerList();
+				
+				
 			} else if (pomData[1].contains("no") && pomData[2].contains("badLog")) {
 				System.out.println("This nickname is not using");
-				action.prihlaseni();
+				mMR.regOrLog();
 			} else {
 				System.out.println("Bad password");
-				action.prihlaseni();
+				mMR.regOrLog();
 			}
 
 			break;
 		case "PlayerList":
 
-			System.out.println(pomData.toString() + "Pom data");
-
 			if (pomData.length > 1) {
-				System.out.println("Pro volbu hrace zvolte cislo");
-				ArrayList<String> hraci = netLog.creatPlayersList(pomData[1]);
-
-				for (int i = 0; i < hraci.size(); i++) {
-					System.out.println(i + " pro " + hraci.get(i));
-
-				}
-
-				int pom = mMR.getSc().nextInt();
-
-				netLog.createGame(hraci.get(pom));
-
+				vypisHrace(pomData);				
 			} else {
 				System.out.println("Musite pockat na volneho hrace...");
 			}
 
 			break;
 		case "Logout":
-
-			// mMR.showLogoutMessage(netLog.getPlayerName(), Integer.parseInt(pomData[1]));
-
+			System.out.println("Hrac" + netLog.getName() +  "opustil hru");			
+			netLog.deleteGameLeave(Integer.parseInt(pomData[1]));
+			
+			System.out.println("Budete presmerovan na vyber jineho hrace");
+			System.out.println("Pro ukonceni stisknete ctrl + C ");
+			
+			netLog.getFreePlayerList();
+			
 			break;
 		case "Challenge":
 			receiveChallenge(pomData);
@@ -137,6 +121,25 @@ public class UiCommObserver implements ICommObserver {
 		}
 	}
 
+	private void vypisHrace(String[] pomData) {
+		System.out.println("Pro volbu hrace zvolte cislo");
+		ArrayList<String> hraci = netLog.creatPlayersList(pomData[1]);
+
+		for (int i = 0; i < hraci.size(); i++) {
+			System.out.println(i + " pro " + hraci.get(i));
+
+		}
+
+		int pom = mMR.getSc().nextInt();
+		if (pom > (hraci.size()-1)) {
+			vypisHrace(pomData);
+			return;
+		}
+		netLog.createGame(hraci.get(pom));
+
+		
+	}
+
 	/**
 	 * Pomocna metoda pro zpracovani zprav o registraci
 	 * 
@@ -146,15 +149,15 @@ public class UiCommObserver implements ICommObserver {
 
 		if (pomData[1].contains("bad")) {
 			System.out.println("This nickname is using");
-
+			mMR.regOrLog();
 		} else if (pomData[1].contains("bad2")) {
 
 			System.out.println("This nickname is long, length must be less 30 and must not be 0");
-
+			mMR.regOrLog();
 		} else {
 
 			System.out.println("Jste registrovan");
-			mMR.RegOrLog();
+			mMR.regOrLog();
 		}
 
 	}

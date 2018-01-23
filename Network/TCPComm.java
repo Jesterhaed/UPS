@@ -54,7 +54,7 @@ public class TCPComm implements ITCP, Runnable {
 			m_output.write(data.getBytes());
 		} catch (IOException e) {
 			endConection();
-			System.err.println("Caught IOException: " + e.getMessage());
+		//	System.err.println("Caught IOException: " + e.getMessage());
 		}
 	}
 
@@ -80,8 +80,7 @@ public class TCPComm implements ITCP, Runnable {
 			m_output = socket.getOutputStream();
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			m_observer.processData("Connect,");
-
-			for (;;) {
+						for (;;) {
 				try {
 
 					String data = new String();
@@ -99,7 +98,7 @@ public class TCPComm implements ITCP, Runnable {
 				} catch (SocketTimeoutException e) {
 
 					send("CheckConnect,\n");
-					System.err.println("Caught TimeoutException: " + counterTimeOUt + " " + e.getMessage());
+				//	System.err.println("Caught TimeoutException: " + counterTimeOUt + " " + e.getMessage());
 
 					if (counterTimeOUt > 0) {
 						m_observer.processData("NoServer");

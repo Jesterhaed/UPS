@@ -39,9 +39,7 @@ public class NetworkLogics {
 		this.setChallenger(true);
 		this.setlLog(lLog);
 
-		// colors = new Color[Constants.countKnobs];
-		colorsIndex = new int[Constants.countKnobs];
-
+		
 	}
 
 	/**
@@ -62,7 +60,6 @@ public class NetworkLogics {
 
 		lLog.setLog(false);
 		comm.send(message);
-		// mMR.setWellcomeWindow();
 	}
 
 	/**
@@ -91,7 +88,6 @@ public class NetworkLogics {
 	 */
 	public void createGame(String playerName) {
 		comm.send("Challenge,invite," + playerName + ",\n");
-		// fPLW.freezButton();
 	}
 
 	/**
@@ -112,17 +108,6 @@ public class NetworkLogics {
 	public void challengeRefuse(String player) {
 
 		comm.send("Challenge,refuse," + player + ",\n");
-
-	}
-
-	/**
-	 * Zavola metodu mMR pro messagebox o pozvani do hry
-	 * 
-	 * @param player
-	 */
-	public void createChallengeMesagge(String player) {
-
-		// mMR.showPlayerMessage(player);
 
 	}
 
@@ -182,28 +167,10 @@ public class NetworkLogics {
 		comm.send("Game,hraj,\n");
 		
 	}
-	
-	public void checkGame(int game) {
-
-		comm.send("CheckGame," + game + ",\n");
-
-	}
-	
-	
+		
 	public void sendMiss() {
 		comm.send("Game,miss,\n");
 		
-	}
-
-	public void messageAccepted() {
-
-		// multiM.unFreezDesk();
-
-	}
-
-	public void invateMessageAccept() {
-		// fPLW.unFreezButton();
-
 	}
 
 	/**

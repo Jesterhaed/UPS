@@ -72,6 +72,7 @@ typedef struct User_database{
 typedef struct User_conected{
 
 	char nickname[30];
+	int protihracLogOut;
 	int socket;
 	int id;
 	int isLog;

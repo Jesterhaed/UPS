@@ -12,6 +12,8 @@ import Control.NetworkLogics;
 import Control.UiCommObserver;
 import Interfaces.ITCP;
 import Network.TCPComm;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
 public class MasterMindRun{
 
@@ -34,6 +36,17 @@ public class MasterMindRun{
 	
 	public MasterMindRun() {
 		
+		   Signal.handle(new Signal("INT"), new SignalHandler() {
+	            public void handle(Signal sig) {
+	                System.out.format("\nUkonceni programu");
+	                if (logLogics.isLog()) {
+						netLog.signOutUser("LogOut,end,\n");
+					}
+	                System.exit(0);
+	            }
+	        });
+		
+		
 		this.logLogics = new LogginLogics(this);
 		this.netLog = new NetworkLogics(this, logLogics);
 		this.sc = new Scanner(System.in);
@@ -41,11 +54,12 @@ public class MasterMindRun{
 		this.actions = new Actions(this, logLogics, netLog, gameControl);
 		prihlaseni();
 		createConnect();
-		RegOrLog();
 		
 	}
 	
-	public void RegOrLog() {
+	
+	
+	public void regOrLog() {
 		
 		System.out.println("'Pro registraci zadej R, pro prihlaseni P");
 		String volba = sc.nextLine();
@@ -55,7 +69,8 @@ public class MasterMindRun{
 		}else if(volba.equals("P")) {
 			actions.prihlaseni();
 		}else {
-			RegOrLog();
+			regOrLog();
+			return;
 		}
 			
 		
@@ -64,11 +79,11 @@ public class MasterMindRun{
 	public void prihlaseni() {
 		
 		System.out.println("'Zadej adresu serveru");
-		String addr = sc.nextLine();
-//		String addr = "192.168.0.173";
+	//	String addr = sc.nextLine();
+		String addr = "192.168.0.173";
 		System.out.println("'Zadej port serveru");
-		String port = sc.nextLine();
-//		String port = "22343";
+//		String port = sc.nextLine();
+		String port = "22343";
 		logLogics.confirmDataInServerForm(addr, port);
 		
 	}
