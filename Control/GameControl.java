@@ -258,6 +258,10 @@ public class GameControl {
 		tank.setHP(zivoty);
 		System.out.println(tank.toString() + "zivoty" + zivoty);
 
+		if (odecet == 75 && zivoty < 0) {
+			zivoty = 0;
+		}
+		
 		if (zivoty > 0) {
 			netLogic.sendTrefa(odecet);
 		} else if (zivoty == 0) {
