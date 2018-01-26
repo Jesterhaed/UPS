@@ -2,11 +2,11 @@ package Control;
 
 import java.util.Scanner;
 
-import Run.MasterMindRun;
+import Run.TanksRun;
 
 public class Actions {
 
-	private MasterMindRun mMR;
+	private TanksRun mMR;
 	private LogginLogics logLogic;
 	private Scanner sc;
 	private NetworkLogics netLogic;
@@ -14,7 +14,7 @@ public class Actions {
 	private String name;
 	private GameControl gameControl;
 	
-	public Actions(MasterMindRun mMR, LogginLogics logLogic, NetworkLogics netLogic, GameControl gameControl) {
+	public Actions(TanksRun mMR, LogginLogics logLogic, NetworkLogics netLogic, GameControl gameControl) {
 		this.mMR = mMR;
 		this.logLogic = logLogic;
 		this.sc = mMR.getSc();
@@ -61,8 +61,19 @@ public void provedAkciNaPozvani(String jmeno) {
 	
 	System.out.println("Hrac " + jmeno + " vas pozval do hry");
 	System.out.println("Pro prijeti zmacknete 1 pro odmitnuti 2");
+
+	int volba = 0;
+
 	
-	int volba = sc.nextInt();
+	try {
+		volba = sc.nextInt();
+		
+	} catch (Exception e) {
+		
+		System.out.println("Pro potvrzeni volby musite stisknout cislo ");
+		provedAkciNaPozvani(jmeno);
+		return;
+	}
 	
 	if (volba == 1) {
 		netLogic.challengeAccepted(jmeno);

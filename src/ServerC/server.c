@@ -685,10 +685,12 @@ int control_chellange(char* player) {
 *
 */
 void send_invitation(User_conected* user, char* player) {
+	
 	if (control_chellange(player) == 1) {
 		invalid_input(user);
 		return;
 	}
+
 	
 	int i;
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
@@ -706,10 +708,23 @@ void send_invitation(User_conected* user, char* player) {
 
 		if (conected_users[i] != NULL) {
 			if (strcmp(conected_users[i]->nickname, player) == 0) {
-				finish = strcat(message, user->nickname);
-				message = strcat(finish, ",invite,\n");
-				send_message(conected_users[i], message);
+
+				if (conected_users[i]->play != 1) {
+
+					finish = strcat(message, user->nickname);
+					message = strcat(finish, ",invite,\n");
+					send_message(conected_users[i], message);
+
+				}
+				else {
+					char* message1 = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
+					strcpy(message1, "Challenge,refuse,protihrac,\n");
+					send_message(user, message1);
+					free(message1);
+				}
+
 			}
+
 
 		}
 
@@ -1023,7 +1038,7 @@ void zmena_hrace(User_conected* user) {
 	strcpy(message, "Game,hraj,\n");
 	if (user->game != NULL) {
 		Game* game1 = user->game;
-
+		
 		if (game1->tah_vyzivatel == 1) {
 			send_message(conected_users[game1->gamer2], message);
 			game1->tah_vyzivatel = 0;
@@ -1135,6 +1150,7 @@ void receive_challenge(User_conected* user, char* message) {
 		send_refuse_chellange(user, ret3);
 	}
 	else if (strcmp(message, "invite") == 0) {
+		
 		send_invitation(user, ret3);
 	}
 	else {
@@ -1145,6 +1161,36 @@ void receive_challenge(User_conected* user, char* message) {
 
 	free(pom);
 }
+
+void delete_game_end(User_conected* user) {
+
+	int id;
+
+
+	if (user->game != NULL) {
+
+		Game* game1 = user->game;
+		id = game1->id;
+
+		int id1 = game[id]->gamer1;
+		int id2 = game[id]->gamer2;
+
+		if (conected_users[id1] != NULL) {
+			conected_users[id1]->play = 0;
+			conected_users[id2]->play = 0;
+		}
+		if (conected_users[id2] != NULL) {
+			conected_users[id2]->game = NULL;
+			conected_users[id2]->game = NULL;
+		}
+
+	}
+
+	free(game[id]);
+	game[id] = NULL;
+}
+
+
 /*
 * receive_game(User_conected* user, char* message)
 *
@@ -1196,6 +1242,10 @@ void receive_game(User_conected* user, char* message) {
 
 		zmena_hrace(user);
 	}
+	else if (strcmp(message, "endGame") == 0) {
+
+		delete_game_end(user);
+	}
 	else {
 		invalid_input(user);
 		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message);
@@ -1227,6 +1277,9 @@ int control_player_list(char* message) {
 }
 
 void delete_game(User_conected* user, char* message) {
+
+	printf("Delete game");
+
 	long val;
 	char *next;
 	char *ret = strchr(message, ',');
@@ -1250,18 +1303,30 @@ void delete_game(User_conected* user, char* message) {
 	int id1 = game[i]->gamer1;
 	int id2 = game[i]->gamer2;
 
+	printf("Pred uzivateli");
+
+
 	if (conected_users[id1] != NULL) {
 		conected_users[id1]->play = 0;
+	}
+
+	if (conected_users[id2] != NULL) {
 		conected_users[id2]->play = 0;
 	}
+
 	if (conected_users[id2] != NULL) {
 		conected_users[id2]->game = NULL;
-		conected_users[id2]->game = NULL;
 	}
+
+	if (conected_users[id1] != NULL) {
+		conected_users[id1]->game = NULL;
+	}
+
 
 	free(game[i]);
 	game[i] = NULL;
 }
+
 
 
 /*
@@ -1343,8 +1408,10 @@ void *createThread(void *incoming_socket) {
 
 		}
 		else if (strcmp(buffer, "Game") == 0) {
+			printf("Pred hrou\n");
 			if (user->protihracLogOut != 1) {
-			receive_game(user, ret2);
+			
+				receive_game(user, ret2);
 
 			}
 

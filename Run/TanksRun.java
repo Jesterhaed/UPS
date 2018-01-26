@@ -15,7 +15,7 @@ import Network.TCPComm;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 
-public class MasterMindRun{
+public class TanksRun{
 
 	/**
 	 * Metoda main Zavola launch a spusti program
@@ -34,7 +34,7 @@ public class MasterMindRun{
 	private Actions actions;
 	private GameControl gameControl;
 	
-	public MasterMindRun() {
+	public TanksRun() {
 		
 		   Signal.handle(new Signal("INT"), new SignalHandler() {
 	            public void handle(Signal sig) {

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 
 import Network.TCPComm;
-import Run.MasterMindRun;
+import Run.TanksRun;
 
 
 public class LogginLogics {
@@ -24,11 +24,11 @@ public class LogginLogics {
 	private String serverAddres = "127.0.0.1";
 	private int serverPort = 22343;
 
-	private MasterMindRun mMR;
+	private TanksRun mMR;
 	private TCPComm comm;
 
 	
-	public LogginLogics(MasterMindRun mMR) {
+	public LogginLogics(TanksRun mMR) {
 		this.mMR = mMR;
 	}
 

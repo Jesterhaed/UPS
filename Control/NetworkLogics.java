@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Random;
 
 import Network.TCPComm;
-import Run.MasterMindRun;
+import Run.TanksRun;
 
 public class NetworkLogics {
 
 	/** Globalni promenne tridy **/
 	private TCPComm comm;
-	private MasterMindRun mMR;
+	private TanksRun mMR;
 	private String playerName;
 	private String name;
 	private boolean challenger;
@@ -33,7 +33,7 @@ public class NetworkLogics {
 	 * @param mMR
 	 * @param lLog
 	 */
-	public NetworkLogics(MasterMindRun mMR, LogginLogics lLog) {
+	public NetworkLogics(TanksRun mMR, LogginLogics lLog) {
 
 		this.mMR = mMR;
 		this.setChallenger(true);
@@ -74,6 +74,7 @@ public class NetworkLogics {
 
 		ArrayList<String> data = new ArrayList<>();
 
+		
 		for (int i = 0; i < players.length; i++) {
 			data.add(players[i]);
 		}
@@ -172,6 +173,12 @@ public class NetworkLogics {
 		comm.send("Game,miss,\n");
 		
 	}
+	
+	public void sendEndGame() {
+		comm.send("Game,endGame,\n");
+		
+	}
+
 
 	/**
 	 * Odesle zpravu s informaci o smazani hry ze serveru
@@ -262,6 +269,7 @@ public class NetworkLogics {
 	public void setlLog(LogginLogics lLog) {
 		this.lLog = lLog;
 	}
+
 
 	
 

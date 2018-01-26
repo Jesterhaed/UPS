@@ -3,13 +3,13 @@ package Control;
 import java.util.ArrayList;
 
 import Interfaces.ICommObserver;
-import Run.MasterMindRun;
+import Run.TanksRun;
 
 public class UiCommObserver implements ICommObserver {
 
 	/** Globani promenne tridy **/
 
-	private MasterMindRun mMR;
+	private TanksRun mMR;
 	private LogginLogics lLog;
 
 	private NetworkLogics netLog;
@@ -24,7 +24,7 @@ public class UiCommObserver implements ICommObserver {
 	 * @param lLog
 	 * @param netLog
 	 */
-	public UiCommObserver(MasterMindRun mMR, LogginLogics lLog, NetworkLogics netLog, Actions action,
+	public UiCommObserver(TanksRun mMR, LogginLogics lLog, NetworkLogics netLog, Actions action,
 			GameControl gameConrol) {
 		this.mMR = mMR;
 		this.lLog = lLog;
@@ -77,6 +77,7 @@ public class UiCommObserver implements ICommObserver {
 				lLog.setLog(true);
 				netLog.setName(action.getName());
 				System.out.println("Vitej ve hre hraci " + action.getName());
+				
 				netLog.getFreePlayerList();
 				
 				
@@ -130,11 +131,23 @@ public class UiCommObserver implements ICommObserver {
 
 		}
 
-		int pom = mMR.getSc().nextInt();
+		int pom = 0;
+		String volba = mMR.getSc().next();
+		try {
+			pom = 	Integer.parseInt(volba);
+			System.out.println(pom);
+		} catch (NumberFormatException e) {
+			
+			System.out.println("Pro volbu hrace musite stisknout cislo ");
+			vypisHrace(pomData);
+			return;
+		}
+		
 		if (pom > (hraci.size()-1)) {
 			vypisHrace(pomData);
 			return;
 		}
+		
 		netLog.createGame(hraci.get(pom));
 
 		
@@ -188,12 +201,18 @@ public class UiCommObserver implements ICommObserver {
 			netLog.sendHraj();
 		
 		} else if (pomData[1].contains("zniceno")) {
+			
 			System.out.println("Znicen tank " + pomData[2]);
-			System.out.println(gameControl.getHraciPole().getTankuVeHre() + "Tanku");
+		
 			gameControl.setZasazenychTanku(gameControl.getZasazenychTanku()+1);
 			
 			if (gameControl.getZasazenychTanku() == 4) {
 				System.out.println("Gratuluju vyhral jste!!!");
+				
+				netLog.sendEndGame();
+				gameControl.vynuluj_hru();
+				System.out.println("Vyberete protihrace");
+				netLog.getFreePlayerList();
 			}else {
 				System.out.println("Hraje protihrac...");			
 				netLog.sendHraj();				
@@ -210,15 +229,7 @@ public class UiCommObserver implements ICommObserver {
 		} else if (pomData[1].contains("hraj")) {
 	
 			gameControl.udelejTah();
-		}else if (pomData[1].contains("gameDone")) {
 			
-			System.out.println("Gratuluju vyhral jste!!!");
-			netLog.sendGameOver();
-		
-		}else if (pomData[1].contains("gemeOver")) {
-	
-		System.out.println("Jenam lito protivnik vyhral");
-		
 		}
 	}
 

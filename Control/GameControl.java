@@ -5,13 +5,13 @@ import java.util.Scanner;
 import Game.HraciPole;
 import Game.Tank;
 import Game.TypyTanku;
-import Run.MasterMindRun;
+import Run.TanksRun;
 
 public class GameControl {
 
 	public static final int velikostPole = 6;
 
-	private MasterMindRun mMR;
+	private TanksRun mMR;
 	private LogginLogics logLogic;
 	private Scanner sc;
 	private NetworkLogics netLogic;
@@ -24,17 +24,26 @@ public class GameControl {
 	private boolean vyzivatelPoleReady = false;
 	private boolean protivnikPoleReady = false;
 
-	public GameControl(MasterMindRun mMR, LogginLogics logLogic, NetworkLogics netLogic) {
+	public GameControl(TanksRun mMR, LogginLogics logLogic, NetworkLogics netLogic) {
 		this.mMR = mMR;
 		this.logLogic = logLogic;
 		this.sc = new Scanner(System.in);
 		this.netLogic = netLogic;
 	}
 
+	public void vynuluj_hru() {
+		zasazenychTanku = 0;
+
+		vyzivatel = false;
+		vyzivatelPoleReady = false;
+		protivnikPoleReady = false;
+	}
+	
 	public void nastaveniHracihoPole(String jmeno, boolean vyzivatel) {
 
+				
 		this.hraciPole = new HraciPole(this, vyzivatel);
-		this.vyzivatel = vyzivatel;
+		this.setVyzivatel(vyzivatel);
 
 		Tank HT = new Tank(this, TypyTanku.HT);
 		Tank MT = new Tank(this, TypyTanku.MT);
@@ -42,19 +51,18 @@ public class GameControl {
 		Tank LT = new Tank(this, TypyTanku.LT);
 
 		vypisUmisteniTanku("Zvolte umisteni pro Tank HT na hraci pole napriklad ve formatu 1;A ", HT);
-		netLogic.checkConnect();
+		
 		vypisUmisteniTanku("Zvolte umisteni pro Tank MT na hraci pole napriklad ve formatu 1;A ", MT);
-		netLogic.checkConnect();
+		
 		vypisUmisteniTanku("Zvolte umisteni pro Tank TD na hraci pole napriklad ve formatu 1;A ", TD);
-		netLogic.checkConnect();
+		
 		vypisUmisteniTanku("Zvolte umisteni pro Tank LT na hraci pole napriklad ve formatu 1;A ", LT);
-		netLogic.checkConnect();
+		
 		
 		setPoleReady(vyzivatel);
 
 		if (!vyzivatel) {
 			netLogic.sendHraciPoleReady();
-			System.out.println("");
 		}
 
 	}
@@ -84,25 +92,37 @@ public class GameControl {
 		System.out.println("Zvol policko pro strelbu napriklad ve formatu 1;A");
 		String tah = sc.nextLine();
 		
-		netLogic.checkConnect();
-		
 		int x = 0;
 		int y = 0;
 
 		String[] umisteni2 = zpracujUmisteni(tah);
 
+		if (umisteni2.length < 2) {
+			
+			System.out.println("Spatne zadane umisteni");
+			udelejTah();
+			return;
+		
+		}
+		
+		
 		try {
 
 			x = Integer.parseInt(umisteni2[0]) - 1;
 			y = prevedPismenoNaInt(umisteni2[1]);
+			
 		} catch (NumberFormatException e) {
 			System.out.println("Spatne zadane umisteni");
 			udelejTah();
+			return;
 		}
 
 		if (y == -1 || y > 5 || x > 5 || x < 0) {
 
 			System.out.println("Spatne zadane umisteni");
+			udelejTah();
+			return;
+			
 		} else {
 
 			netLogic.sendTah(tah);
@@ -136,33 +156,36 @@ public class GameControl {
 			return;
 		}
 		
-		if (!zkontrolujUmisteniTanku(tank, x, y)) {
-			vypisUmisteniTanku(hlaska, tank);
-			return;
-		}
-
-		System.out.println(x  + " " +  y);
 		
 		if (y == -1 || y > 5 || x > 5 || x < 0) {
 
 			System.out.println("Spatne zadane umisteni");
 			vypisUmisteniTanku(hlaska, tank);
 			return;
-		} else {
-
-			tank.nastavTankNaPole(hraciPole, x, y);
+		} 
+		
+		
+		if (!zkontrolujUmisteniTanku(tank, x, y)) {
+			vypisUmisteniTanku(hlaska, tank);
+			return;
 		}
+
+		tank.nastavTankNaPole(hraciPole, x, y);
+
+
+		
 
 	}
 
 	private boolean zkontrolujUmisteniTanku(Tank tank, int x, int y) {
+		
 		if (tank.toString().equals(TypyTanku.HT.toString())) {
 			if ((x-2) < 0 ) {
 				System.out.println("Zde dany tank nemuze byt umisten");
 				return false;
 			}
 						
-		}else if(y == -1){
+			}else if(y == -1){
 			System.out.println("Spatne zadane umisteni");
 			return false;
 		
@@ -264,7 +287,7 @@ public class GameControl {
 		
 		if (zivoty > 0) {
 			netLogic.sendTrefa(odecet);
-		} else if (zivoty == 0) {
+		} else if (zivoty == 0 && !tank.isZnicen()) {
 			netLogic.sendZniceno(tank.getTyp().toString());
 			tank.setZnicen(true);
 			int tanku = hraciPole.getTankuVeHre() - 1;
@@ -272,6 +295,8 @@ public class GameControl {
 
 			if (tanku == 0) {
 				System.out.println("Jenam lito ale prohral jste ");
+				vynuluj_hru();
+				System.out.println("Pockejte na protihrace");
 			}
 
 		} else {
@@ -294,6 +319,14 @@ public class GameControl {
 
 	public void setZasazenychTanku(int zasazenychTanku) {
 		this.zasazenychTanku = zasazenychTanku;
+	}
+
+	public boolean isVyzivatel() {
+		return vyzivatel;
+	}
+
+	public void setVyzivatel(boolean vyzivatel) {
+		this.vyzivatel = vyzivatel;
 	}
 
 }

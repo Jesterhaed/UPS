@@ -14,7 +14,7 @@ import java.net.SocketTimeoutException;
 import Control.NetworkLogics;
 import Interfaces.ICommObserver;
 import Interfaces.ITCP;
-import Run.MasterMindRun;
+import Run.TanksRun;
 
 
 public class TCPComm implements ITCP, Runnable {
