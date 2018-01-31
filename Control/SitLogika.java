@@ -1,41 +1,29 @@
 package Control;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 import Network.TCPComm;
 import Run.TanksRun;
 
-public class NetworkLogics {
+public class SitLogika {
 
 	/** Globalni promenne tridy **/
 	private TCPComm comm;
-	private TanksRun mMR;
-	private String playerName;
+	private TanksRun tR;
 	private String name;
 	private boolean challenger;
 
-	private int[] colorsIndex;
-	private int checkIndex;
-	private int greatColors = 0;
-	private int catchColors = 0;
-	private int goodColors = 0;
-	private int indexButton;
-	private LogginLogics lLog;
-	private int countBackPanel = 0;
+	private LogikaPrihlaseni lLog;
 
 	/**
-	 * Inicializace objektu mMR a lLog
+	 * Inicializace objektu tR a lLog
 	 * 
-	 * @param mMR
+	 * @param tR
 	 * @param lLog
 	 */
-	public NetworkLogics(TanksRun mMR, LogginLogics lLog) {
+	public SitLogika(TanksRun tR, LogikaPrihlaseni lLog) {
 
-		this.mMR = mMR;
+		this.tR = tR;
 		this.setChallenger(true);
 		this.setlLog(lLog);
 
@@ -113,15 +101,6 @@ public class NetworkLogics {
 	}
 
 	/**
-	 * Zprava o opusteni hry
-	 */
-	public void leaveGame() {
-
-		comm.send("Game,leave," + name + ",\n");
-
-	}
-
-	/**
 	 * Zprava o prohre vyzivatele
 	 */
 	public void sendGameOver() {
@@ -179,17 +158,6 @@ public class NetworkLogics {
 		
 	}
 
-
-	/**
-	 * Odesle zpravu s informaci o smazani hry ze serveru
-	 * 
-	 * @param game
-	 */
-	public void deleteGame(int game) {
-		comm.send("DeleteGame," + game + ",\n");
-
-	}
-
 	/**
 	 * Odesle zpravu s informaci o smazani hry ze serveru
 	 * 
@@ -201,7 +169,7 @@ public class NetworkLogics {
 	}
 
 	public void sendSingForm(String nickname, String passwd) {
-		comm.send(lLog.createLogMessage(nickname, mMR.getLogLogics().hashPassword(passwd)));
+		comm.send(lLog.createLogMessage(nickname, tR.getLogLogics().hashPassword(passwd)));
 
 	}
 
@@ -229,15 +197,7 @@ public class NetworkLogics {
 	public void setComm(TCPComm comm) {
 		this.comm = comm;
 	}
-
-	public String getPlayerName() {
-		return playerName;
-	}
-
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
-	}
-
+	
 	public boolean isChallenger() {
 		return challenger;
 	}
@@ -254,27 +214,12 @@ public class NetworkLogics {
 		this.name = name;
 	}
 
-	public int getIndexButton() {
-		return indexButton;
-	}
 
-	public void setIndexButton(int indexButton) {
-		this.indexButton = indexButton;
-	}
-
-	public LogginLogics getlLog() {
+	public LogikaPrihlaseni getlLog() {
 		return lLog;
 	}
 
-	public void setlLog(LogginLogics lLog) {
+	public void setlLog(LogikaPrihlaseni lLog) {
 		this.lLog = lLog;
 	}
-
-
-	
-
-	
-
-	
-
 }

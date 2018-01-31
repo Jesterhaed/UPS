@@ -1,17 +1,17 @@
 package Game;
 
-import Control.GameControl;
+import Control.HraLogika;
 
 public class Tank {
 
 	private TypyTanku typ;
 	private int HP;
 	
-	private GameControl gameControl;
+	private HraLogika gameControl;
 	private IdPolicka idPolicka;
 	private boolean znicen = false;
 	
-	public Tank(GameControl gameControl, TypyTanku typ) {
+	public Tank(HraLogika gameControl, TypyTanku typ) {
 		this.typ = typ;
 		this.gameControl = gameControl;
 		this.HP = 100;
@@ -60,8 +60,6 @@ public class Tank {
 		return typ.toString();
 	}
 	
-	
-	
 
 	public TypyTanku getTyp() {
 		return typ;
@@ -79,11 +77,11 @@ public class Tank {
 		HP = hP;
 	}
 
-	public GameControl getGameControl() {
+	public HraLogika getGameControl() {
 		return gameControl;
 	}
 
-	public void setGameControl(GameControl gameControl) {
+	public void setGameControl(HraLogika gameControl) {
 		this.gameControl = gameControl;
 	}
 
@@ -108,8 +106,4 @@ public class Tank {
 	public void setZnicen(boolean znicen) {
 		this.znicen = znicen;
 	}
-	
-	
-	
-	
 }

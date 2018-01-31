@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<project default="create_run_jar" name="Create Runnable Jar for Project UPS-Logik">
+<project default="create_run_jar" name="Create Runnable Jar for Project UPS-Tanky">
 
 
 
@@ -40,7 +40,7 @@
 
 			<manifest>
 
-				<attribute name="Main-Class" value="Run.MasterMindRun" />
+				<attribute name="Main-Class" value="Run.Main" />
 
 				<attribute name="Class-Path" value="." />
 

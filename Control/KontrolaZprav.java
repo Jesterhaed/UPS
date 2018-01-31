@@ -1,14 +1,12 @@
 package Control;
 
-import java.util.regex.Pattern;
-
 import Game.TypyTanku;
 
-public class MessageControl {
+public class KontrolaZprav {
 
-	private GameControl gameControl;
+	private HraLogika gameControl;
 
-	public MessageControl(GameControl gameControl) {
+	public KontrolaZprav(HraLogika gameControl) {
 
 		this.gameControl = gameControl;
 
@@ -43,11 +41,6 @@ public class MessageControl {
 				return false;
 
 			break;
-		case "Wait":
-			if (pomData.length > 1)
-				return false;
-
-			break;
 		case "NoServer":
 			if (pomData.length > 1)
 				return false;
@@ -61,18 +54,6 @@ public class MessageControl {
 		case "Connect":
 			if (pomData.length > 1)
 				return false;
-			break;
-		case "Reload":
-
-			if (pomData.length < 4 || pomData.length > 4)
-				return false;
-
-			try {
-				int pom = Integer.parseInt(pomData[1]);
-			} catch (NumberFormatException e) {
-
-				return false;
-			}
 			break;
 		case "Registrace":
 
@@ -157,6 +138,7 @@ public class MessageControl {
 				return false;
 			}
 			break;
+			
 		case "tah":
 			if (pomData.length > 3) {
 				return false;
@@ -183,12 +165,12 @@ public class MessageControl {
 				return false;
 			}
 			break;
+			
 		case "trefa":
 			if (pomData.length > 3)
 				return false;
 
 			int odecet;
-			System.out.println("odecet");
 			try {
 
 				odecet = Integer.parseInt(pomData[2]);
@@ -196,27 +178,16 @@ public class MessageControl {
 				return false;
 			}
 
-			System.out.println("odecet");
-			if (odecet == 75) {
+			if (odecet == 75 || odecet == 50 || odecet == 25 || odecet == 0) {
 				return true;
 			}
 
-			if (odecet == 25) {
-				return true;
-			}
-			if (odecet == 50) {
-				return true;
-			}
-			
-			if (odecet == 0) {
-				return true;
-			}
 			return false;
+			
 		case "zniceno":
 			if (pomData.length > 3) {
 				return false;
 			}
-			System.out.println(pomData[2]);
 			
 			if (pomData[2].equals(TypyTanku.HT.toString())) {
 				return true;
@@ -240,44 +211,4 @@ public class MessageControl {
 
 		return true;
 	}
-
-	public boolean confirmResultColors(String colors) {
-		String[] pom = colors.split(";");
-
-		if (pom.length < 4 || pom.length > 4)
-			return false;
-
-		for (int i = 0; i < pom.length; i++) {
-
-			try {
-				int pom1 = Integer.parseInt(pom[i]);
-			} catch (NumberFormatException e) {
-
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	public boolean confirmColors(String id, String colors) {
-
-		try {
-			int pom1 = Integer.parseInt(id);
-
-			String[] pom = colors.split(";");
-			if (pom.length < 4 || pom.length > 4)
-				return false;
-
-			for (int i = 0; i < pom.length; i++) {
-				pom1 = Integer.parseInt(pom[i]);
-			}
-		} catch (NumberFormatException e) {
-
-			return false;
-		}
-
-		return true;
-	}
-
 }

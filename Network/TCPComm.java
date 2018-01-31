@@ -2,32 +2,26 @@ package Network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 
-import Control.NetworkLogics;
-import Interfaces.ICommObserver;
+import Interfaces.IKomunikaceServeru;
 import Interfaces.ITCP;
-import Run.TanksRun;
 
 
 public class TCPComm implements ITCP, Runnable {
 
 	/** Globalni promenne tridy **/
-	private ICommObserver m_observer;
+	private IKomunikaceServeru m_observer;
 	private OutputStream m_output;
 	private BufferedReader input;
 	private String address;
 	private int port;
 	private boolean isServer = true;
 	private int counterTimeOUt = 0;
-	private boolean connect = true;
 	private Thread netThread;
 	private Socket socket;
 
@@ -61,7 +55,7 @@ public class TCPComm implements ITCP, Runnable {
 	// ---------------------------------------------------------
 
 	@Override
-	public void registerObserver(ICommObserver observer) {
+	public void registerObserver(IKomunikaceServeru observer) {
 		m_observer = observer;
 	}
 
@@ -70,10 +64,10 @@ public class TCPComm implements ITCP, Runnable {
 	public void run() {
 
 		socket = new Socket();
-		m_observer.processData("Wait,");
+		
 		try {
 			socket.connect(new InetSocketAddress(address, port));
-			System.out.println("Spojeni");
+//			System.out.println("Spojeni");
 
 			socket.setSoTimeout(30000);
 
@@ -125,7 +119,7 @@ public class TCPComm implements ITCP, Runnable {
 	public void endConection() {
 		try {
 
-			System.out.println("Cancel connection");
+			System.out.println("Ukonceni spojeni.");
 			socket.close();
 			m_output.close();
 			input.close();

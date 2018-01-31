@@ -1,15 +1,12 @@
 package Run;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Optional;
 import java.util.Scanner;
 
-import Control.Actions;
-import Control.GameControl;
-import Control.LogginLogics;
-import Control.NetworkLogics;
-import Control.UiCommObserver;
+import Control.PrihlaseniKl;
+import Control.HraLogika;
+import Control.LogikaPrihlaseni;
+import Control.SitLogika;
+import Control.KomukiaceServeru;
 import Interfaces.ITCP;
 import Network.TCPComm;
 import sun.misc.Signal;
@@ -24,21 +21,21 @@ public class TanksRun{
 	 */
 
 	/** Atributy tridy **/
-	private LogginLogics logLogics;
+	private LogikaPrihlaseni logLogics;
 	private TCPComm comm;
 	private ITCP tcp;
-	private UiCommObserver m_commObserver;
-	private NetworkLogics netLog;
+	private KomukiaceServeru m_commObserver;
+	private SitLogika netLog;
 	private boolean isServer = true;
 	private Scanner sc;
-	private Actions actions;
-	private GameControl gameControl;
+	private PrihlaseniKl actions;
+	private HraLogika gameControl;
 	
 	public TanksRun() {
 		
 		   Signal.handle(new Signal("INT"), new SignalHandler() {
 	            public void handle(Signal sig) {
-	                System.out.format("\nUkonceni programu");
+	                System.out.format("\nUkonceni programu.");
 	                if (logLogics.isLog()) {
 						netLog.signOutUser("LogOut,end,\n");
 					}
@@ -47,21 +44,20 @@ public class TanksRun{
 	        });
 		
 		
-		this.logLogics = new LogginLogics(this);
-		this.netLog = new NetworkLogics(this, logLogics);
+		this.logLogics = new LogikaPrihlaseni(this);
+		this.netLog = new SitLogika(this, logLogics);
 		this.sc = new Scanner(System.in);
-		this.gameControl = new GameControl(this, logLogics, netLog);
-		this.actions = new Actions(this, logLogics, netLog, gameControl);
+		this.gameControl = new HraLogika(this, logLogics, netLog);
+		this.actions = new PrihlaseniKl(this, logLogics, netLog, gameControl);
 		prihlaseni();
 		createConnect();
-		
 	}
 	
 	
 	
 	public void regOrLog() {
 		
-		System.out.println("'Pro registraci zadej R, pro prihlaseni P");
+		System.out.println("Pro registraci zadej R, pro prihlaseni P.");
 		String volba = sc.nextLine();
 		
 		if(volba.equals("R")) {
@@ -78,12 +74,12 @@ public class TanksRun{
 
 	public void prihlaseni() {
 		
-		System.out.println("'Zadej adresu serveru");
-	//	String addr = sc.nextLine();
-		String addr = "192.168.0.173";
-		System.out.println("'Zadej port serveru");
-//		String port = sc.nextLine();
-		String port = "22343";
+		System.out.println("Zadej adresu serveru:");
+		String addr = sc.nextLine();
+//		String addr = "127.0.0.1";
+		System.out.println("Zadej port serveru:");
+		String port = sc.nextLine();
+//		String port = "2222";
 		logLogics.confirmDataInServerForm(addr, port);
 		
 	}
@@ -101,7 +97,7 @@ public class TanksRun{
 
 			comm = new TCPComm(logLogics.getServerAddres(), logLogics.getServerPort());
 
-			m_commObserver = new UiCommObserver(this, logLogics, netLog, actions, gameControl);
+			m_commObserver = new KomukiaceServeru(this, logLogics, netLog, actions, gameControl);
 			comm.registerObserver(m_commObserver);
 
 			logLogics.setComm(comm);
@@ -109,21 +105,20 @@ public class TanksRun{
 		} catch (NumberFormatException e) {
 
 			e.printStackTrace();
-			System.out.println("Spatne");
+			System.out.println("Spatne.");
 		}
 		comm.start();
-
 	}
 
 	
 	/*** Setrs and Getrs ***/
 
 
-	public LogginLogics getLogLogics() {
+	public LogikaPrihlaseni getLogLogics() {
 		return logLogics;
 	}
 
-	public void setLogLogics(LogginLogics logLogics) {
+	public void setLogLogics(LogikaPrihlaseni logLogics) {
 		this.logLogics = logLogics;
 	}
 
@@ -143,19 +138,19 @@ public class TanksRun{
 		this.comm = comm;
 	}
 
-	public UiCommObserver getM_commObserver() {
+	public KomukiaceServeru getM_commObserver() {
 		return m_commObserver;
 	}
 
-	public void setM_commObserver(UiCommObserver m_commObserver) {
+	public void setM_commObserver(KomukiaceServeru m_commObserver) {
 		this.m_commObserver = m_commObserver;
 	}
 
-	public NetworkLogics getNetLog() {
+	public SitLogika getNetLog() {
 		return netLog;
 	}
 
-	public void setNetLog(NetworkLogics netLog) {
+	public void setNetLog(SitLogika netLog) {
 		this.netLog = netLog;
 	}
 	public boolean isServer() {

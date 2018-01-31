@@ -1,6 +1,6 @@
 package Interfaces;
 
-public interface ICommObserver {
+public interface IKomunikaceServeru {
 
 	void processData(String data);
 

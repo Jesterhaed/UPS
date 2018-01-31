@@ -9,34 +9,32 @@ import Network.TCPComm;
 import Run.TanksRun;
 
 
-public class LogginLogics {
+public class LogikaPrihlaseni {
 
 	/** Globalni promenne tridy **/
-	private boolean isLog = false;
-	private String userNick;
 	
-	private String name;
-	private String surname;
+	public static final String nullConstat = "d41d8cd98f00b204e9800998ecf8427e";
+	
+	private boolean isLog = false;
+
 	private String nickname;
 	private String passwd;
 	private String passwd2;
 
 	private String serverAddres = "127.0.0.1";
-	private int serverPort = 22343;
+	private int serverPort = 2222;
+	
 
-	private TanksRun mMR;
+	private TanksRun tR;
 	private TCPComm comm;
 
 	
-	public LogginLogics(TanksRun mMR) {
-		this.mMR = mMR;
+	public LogikaPrihlaseni(TanksRun tR) {
+		this.tR = tR;
 	}
 
 	/**
 	 * Kontrola udaju zadanych do formulare pro registraci uzivatele
-	 * 
-	 * @param name
-	 * @param surname
 	 * @param nickname
 	 * @param passwd
 	 * @param passwd2
@@ -119,7 +117,7 @@ public class LogginLogics {
 			System.out.println("Chyba prihlaseni.");
 			System.out.println("Neni zadana IP adresa!");
 			System.out.println("Zadej spravnou IP adresu serveru!");
-			mMR.prihlaseni();
+			tR.prihlaseni();
 		}else if(!addres.contains("localhost")){
 			
 			if (pom.length < 4 || confirmAddressBlock(pom)) {
@@ -127,14 +125,13 @@ public class LogginLogics {
 				System.out.println("Chyba prihlaseni.");
 				System.out.println("Zadana spatna IP adresa!");
 				System.out.println("Zadej spravnou IP adresu serveru ve tvaru \"127.0.0.1\" !");
-				mMR.prihlaseni();
+				tR.prihlaseni();
 			}else{
 				setServerAddres(addres);
 				return true;
 			}
 
 		}else {
-			//convertIPAddress(addres.split("."));
 			setServerAddres(addres);
 			return true;
 		}
@@ -168,7 +165,7 @@ public class LogginLogics {
 		if (port.length() == 0 || confirmPortNumber(port)) {
 			System.out.println("Spatne zadany port serveru!");
 			System.out.println("Zadej spravny port.");
-			mMR.prihlaseni();
+			tR.prihlaseni();
 		}else {
 			this.serverPort = Integer.parseInt(port);
 			return true;
@@ -203,10 +200,10 @@ public class LogginLogics {
 	 */
 	public boolean nicknameConfirm(String nickname) {
 		if (nickname.length() == 0) {
-		System.out.println(" Nezadane jmeno");
+		System.out.println(" Nezadane jmeno.");
 
 		}else if(nickname.length() > 30){
-		System.out.println("Prilis dlouhe heslo");
+		System.out.println("Prilis dlouhe heslo.");
 		}else {
 			this.nickname = nickname;
 			return true;
@@ -223,14 +220,10 @@ public class LogginLogics {
 	 * @return
 	 */
 	public boolean passwdConfirm(String passwd) {
-		if (passwd.equals(Constants.nullConstat)) {
-		/*	Alert alert = new Alert(javafx.scene.control.Alert.AlertType.WARNING);
-			alert.setTitle("Sign error");
-			alert.setHeaderText("No password!");
-			alert.setContentText("You must fill password !");
-			alert.showAndWait();
-*/
-			 // vypsat text chyby
+		if (passwd.equals(nullConstat)) {
+			System.out.println("Chyba prihlaseni.");
+			System.out.println("Zadne heslo!");
+			System.out.println("Zadejte heslo!");
 
 		} else {
 			this.passwd = passwd;
@@ -247,15 +240,10 @@ public class LogginLogics {
 	 */
 	public boolean passwd2Confirm(String passwd2) {
 
-		if (passwd2.equals(Constants.nullConstat)) {
-		/*	Alert alert = new Alert(javafx.scene.control.Alert.AlertType.WARNING);
-			alert.setTitle("Sign error");
-			alert.setHeaderText("No password!");
-			alert.setContentText("You must fill confirm password !");
-			alert.showAndWait();
-*/
-			 // vypsat text chyby
-
+		if (passwd2.equals(nullConstat)) {
+			System.out.println("Chyba prihlaseni.");
+			System.out.println("Zadne heslo!");
+			System.out.println("Zadejte potvrzeni hesla!");
 		} else {
 			this.passwd2 = passwd2;
 
@@ -276,15 +264,9 @@ public class LogginLogics {
 		if (passwdConfirm(passwd) && passwd2Confirm(passwd2)) {
 			if (!passwd.equals(passwd2)) {
 
-				/*Alert alert = new Alert(javafx.scene.control.Alert.AlertType.WARNING);
-				alert.setTitle("Sign error");
-				alert.setHeaderText("Bad passwords!");
-				alert.setContentText("Passwords is not same!");
-				alert.showAndWait();
-				sUW.getPasswdTF().setText("");
-				sUW.getPasswd2TF().setText("");
-*/
-				 // vypsat text chyby
+				System.out.println("Chyba prihlaseni.");
+				System.out.println("SpatnuserNicke heslo!");
+				System.out.println("Hesla se neschoduji!");
 
 			} else {
 				return true;
@@ -333,22 +315,6 @@ public class LogginLogics {
 		this.isLog = isLog;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
 	public String getNickname() {
 		return nickname;
 	}
@@ -387,14 +353,6 @@ public class LogginLogics {
 
 	public void setServerPort(int serverPort) {
 		this.serverPort = serverPort;
-	}
-
-	public String getUserNick() {
-		return userNick;
-	}
-
-	public void setUserNick(String userNick) {
-		this.userNick = userNick;
 	}
 
 	public TCPComm getComm() {

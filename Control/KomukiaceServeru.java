@@ -2,36 +2,36 @@ package Control;
 
 import java.util.ArrayList;
 
-import Interfaces.ICommObserver;
+import Interfaces.IKomunikaceServeru;
 import Run.TanksRun;
 
-public class UiCommObserver implements ICommObserver {
+public class KomukiaceServeru implements IKomunikaceServeru {
 
 	/** Globani promenne tridy **/
 
-	private TanksRun mMR;
-	private LogginLogics lLog;
+	private TanksRun tR;
+	private LogikaPrihlaseni logLogic;
 
-	private NetworkLogics netLog;
-	private MessageControl messageCon;
-	private Actions action;
-	private GameControl gameControl;
+	private SitLogika netLogic;
+	private KontrolaZprav messageCon;
+	private PrihlaseniKl action;
+	private HraLogika gameControl;
 
 	/**
-	 * Inicializace objektu mMR, lLog, netLog
+	 * Inicializace objektu tR, lLog, netLog
 	 * 
-	 * @param mMR
-	 * @param lLog
-	 * @param netLog
+	 * @param tR
+	 * @param logLogic
+	 * @param netLogic
 	 */
-	public UiCommObserver(TanksRun mMR, LogginLogics lLog, NetworkLogics netLog, Actions action,
-			GameControl gameConrol) {
-		this.mMR = mMR;
-		this.lLog = lLog;
-		this.netLog = netLog;
+	public KomukiaceServeru(TanksRun tR, LogikaPrihlaseni logLogic, SitLogika netLogic, PrihlaseniKl action,
+			HraLogika gameConrol) {
+		this.tR = tR;
+		this.logLogic = logLogic;
+		this.netLogic = netLogic;
 		this.action = action;
 		this.gameControl = gameConrol;
-		this.messageCon = new MessageControl(gameConrol);
+		this.messageCon = new KontrolaZprav(gameConrol);
 	}
 
 	/**
@@ -39,11 +39,11 @@ public class UiCommObserver implements ICommObserver {
 	 */
 	public void processData(String data) {
 
-		System.out.println("Data " + data + " " + netLog.getName());
+//		System.out.println("Data: " + data + " : " + netLog.getName());
 
 		if (!messageCon.is_valid(data)) {
 
-			System.out.println("Invalid input ");
+			System.out.println("Nevalidni vstup!");
 			return;
 		}
 
@@ -52,21 +52,17 @@ public class UiCommObserver implements ICommObserver {
 		switch (pomData[0]) {
 
 		case "Nevalidni vstup":
-			System.out.println("Odeslana nevalidni zprava");
-			break;
-		case "Wait":
-			// serW.getWaitLB().setVisible(true);
-			// serW.getConfirmBT().setDisable(true);
+			System.out.println("Odeslana nevalidni zprava.");
 			break;
 		case "NoServer":
-			System.out.println("Spojeni se serverem ztraceno");
+			System.out.println("Spojeni se serverem ztraceno.");
 			break;
 		case "CheckConnect":
-			netLog.checkConnect();
+			netLogic.checkConnect();
 			break;
 		case "Connect":
 			System.out.println("Navazano spojeni se serverem.");
-			mMR.regOrLog();
+			tR.regOrLog();
 			break;
 		case "Registrace":
 			receiveRegistrace(pomData);
@@ -74,19 +70,19 @@ public class UiCommObserver implements ICommObserver {
 		case "Log":
 
 			if (pomData[1].contains("yes")) {
-				lLog.setLog(true);
-				netLog.setName(action.getName());
+				logLogic.setLog(true);
+				netLogic.setName(action.getName());
 				System.out.println("Vitej ve hre hraci " + action.getName());
 				
-				netLog.getFreePlayerList();
+				netLogic.getFreePlayerList();
 				
 				
 			} else if (pomData[1].contains("no") && pomData[2].contains("badLog")) {
-				System.out.println("This nickname is not using");
-				mMR.regOrLog();
+				System.out.println("Tato prezdivka neni zaregistrovana.");
+				tR.regOrLog();
 			} else {
-				System.out.println("Bad password");
-				mMR.regOrLog();
+				System.out.println("Spatne heslo.");
+				tR.regOrLog();
 			}
 
 			break;
@@ -100,13 +96,13 @@ public class UiCommObserver implements ICommObserver {
 
 			break;
 		case "Logout":
-			System.out.println("Hrac" + netLog.getName() +  "opustil hru");			
-			netLog.deleteGameLeave(Integer.parseInt(pomData[1]));
+			System.out.println("Hrac" + netLogic.getName() +  "opustil hru");			
+			netLogic.deleteGameLeave(Integer.parseInt(pomData[1]));
 			
-			System.out.println("Budete presmerovan na vyber jineho hrace");
-			System.out.println("Pro ukonceni stisknete ctrl + C ");
+			System.out.println("Budete presmerovan na vyber jineho hrace.");
+			System.out.println("Pro ukonceni stisknete Ctrl + C.");
 			
-			netLog.getFreePlayerList();
+			netLogic.getFreePlayerList();
 			
 			break;
 		case "Challenge":
@@ -123,22 +119,21 @@ public class UiCommObserver implements ICommObserver {
 	}
 
 	private void vypisHrace(String[] pomData) {
-		System.out.println("Pro volbu hrace zvolte cislo");
-		ArrayList<String> hraci = netLog.creatPlayersList(pomData[1]);
+		System.out.println("Pro volbu hrace zvolte cislo.");
+		ArrayList<String> hraci = netLogic.creatPlayersList(pomData[1]);
 
 		for (int i = 0; i < hraci.size(); i++) {
-			System.out.println(i + " pro " + hraci.get(i));
+			System.out.println(i + " pro hrace: " + hraci.get(i));
 
 		}
 
 		int pom = 0;
-		String volba = mMR.getSc().next();
+		String volba = tR.getSc().next();
 		try {
 			pom = 	Integer.parseInt(volba);
-			System.out.println(pom);
 		} catch (NumberFormatException e) {
 			
-			System.out.println("Pro volbu hrace musite stisknout cislo ");
+			System.out.println("Pro volbu hrace musite stisknout cislo!");
 			vypisHrace(pomData);
 			return;
 		}
@@ -148,7 +143,7 @@ public class UiCommObserver implements ICommObserver {
 			return;
 		}
 		
-		netLog.createGame(hraci.get(pom));
+		netLogic.createGame(hraci.get(pom));
 
 		
 	}
@@ -161,16 +156,17 @@ public class UiCommObserver implements ICommObserver {
 	private void receiveRegistrace(String[] pomData) {
 
 		if (pomData[1].contains("bad")) {
-			System.out.println("This nickname is using");
-			mMR.regOrLog();
+			System.out.println("Tato prezdivka je pouzita.");
+			System.out.println("Vyberte si jiny nick!");
+			tR.regOrLog();
 		} else if (pomData[1].contains("bad2")) {
-
-			System.out.println("This nickname is long, length must be less 30 and must not be 0");
-			mMR.regOrLog();
+			System.out.println("Tato prezdivka je prilis dlouha!");
+			System.out.println("Zvolte nick do triceti znaku.");
+			tR.regOrLog();
 		} else {
 
 			System.out.println("Jste registrovan");
-			mMR.regOrLog();
+			tR.regOrLog();
 		}
 
 	}
@@ -188,7 +184,7 @@ public class UiCommObserver implements ICommObserver {
 			
 		} else if (pomData[1].contains("pripravena")) {
 
-			System.out.println("Hraje vyzivatel, pockejte na jeho tah");
+			System.out.println("Hraje vyzivatel, pockejte na jeho tah.");
 		
 		} else if (pomData[1].contains("tah")) {
 
@@ -196,35 +192,35 @@ public class UiCommObserver implements ICommObserver {
 
 		} else if (pomData[1].contains("trefa")) {
 		
-			System.out.println("Trefen tank odecet " + pomData[2]);
-			System.out.println("Hraje protihrac...");
-			netLog.sendHraj();
+			System.out.println("Trefen tank, ubrano " + pomData[2] + " HP.");
+			System.out.println("Na tahu je souper.");
+			netLogic.sendHraj();
 		
 		} else if (pomData[1].contains("zniceno")) {
 			
-			System.out.println("Znicen tank " + pomData[2]);
+			System.out.println("Znicen tank: " + pomData[2]);
 		
 			gameControl.setZasazenychTanku(gameControl.getZasazenychTanku()+1);
 			
 			if (gameControl.getZasazenychTanku() == 4) {
 				System.out.println("Gratuluju vyhral jste!!!");
 				
-				netLog.sendEndGame();
+				netLogic.sendEndGame();
 				gameControl.vynuluj_hru();
-				System.out.println("Vyberete protihrace");
-				netLog.getFreePlayerList();
+				System.out.println("Vyberete protihrace.");
+				netLogic.getFreePlayerList();
 			}else {
 				System.out.println("Hraje protihrac...");			
-				netLog.sendHraj();				
+				netLogic.sendHraj();				
 			}
 			
 
 		
 		} else if (pomData[1].contains("miss")) {
 			
-			System.out.println("Bohuzel nebylo nic trefeno");
-			System.out.println("Hraje protihrac...");
-			netLog.sendHraj();
+			System.out.println("Bohuzel nebylo nic trefeno :(");
+			System.out.println("Na tahu je souper.");
+			netLogic.sendHraj();
 		
 		} else if (pomData[1].contains("hraj")) {
 	
@@ -246,21 +242,20 @@ public class UiCommObserver implements ICommObserver {
 		} else if (pomData[2].contains("refuse")) {
 
 			System.out.println("Proti hrac odmitl hru");
-			netLog.getFreePlayerList();
+			netLogic.getFreePlayerList();
 
 		} else if (pomData[1].contains("messageAccept")) {
-			// System.out.println("Proti hrac prijal hru");
+			// System.out.println("Protihrac prijal hru.");
 
 		} else {
 
 			System.out.println("Zacina hra s hracem " + pomData[1]);
-			netLog.setChallenger(true);
+			netLogic.setChallenger(true);
 			gameControl.nastaveniHracihoPole(action.getName(), true);
 
 		}
 
 	}
 
-	/*************** Getrs and Setrs ******************/
 
 }

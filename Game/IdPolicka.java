@@ -12,9 +12,7 @@ public class IdPolicka {
 		
 	}
 
-	
-	
-	
+
 	public int getHorizontalne() {
 		return horizontalne;
 	}
@@ -30,7 +28,4 @@ public class IdPolicka {
 	public void setVertikalne(int vertikalne) {
 		this.vertikalne = vertikalne;
 	}
-	
-	
-
 }

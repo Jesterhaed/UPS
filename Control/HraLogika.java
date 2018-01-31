@@ -7,25 +7,24 @@ import Game.Tank;
 import Game.TypyTanku;
 import Run.TanksRun;
 
-public class GameControl {
+public class HraLogika {
 
 	public static final int velikostPole = 6;
 
-	private TanksRun mMR;
-	private LogginLogics logLogic;
+	private TanksRun tR;
+	private LogikaPrihlaseni logLogic;
 	private Scanner sc;
-	private NetworkLogics netLogic;
+	private SitLogika netLogic;
 	private HraciPole hraciPole;
 
-	private String name;
 	private int zasazenychTanku = 0;
 
 	private boolean vyzivatel = false;
 	private boolean vyzivatelPoleReady = false;
 	private boolean protivnikPoleReady = false;
 
-	public GameControl(TanksRun mMR, LogginLogics logLogic, NetworkLogics netLogic) {
-		this.mMR = mMR;
+	public HraLogika(TanksRun rR, LogikaPrihlaseni logLogic, SitLogika netLogic) {
+		this.tR = rR;
 		this.logLogic = logLogic;
 		this.sc = new Scanner(System.in);
 		this.netLogic = netLogic;
@@ -50,14 +49,13 @@ public class GameControl {
 		Tank TD = new Tank(this, TypyTanku.TD);
 		Tank LT = new Tank(this, TypyTanku.LT);
 
-		vypisUmisteniTanku("Zvolte umisteni pro Tank HT na hraci pole napriklad ve formatu 1;A ", HT);
+		vypisUmisteniTanku("Zvolte umisteni pro tank HT na hraci pole, napriklad ve formatu 1;A ", HT);
+	
+		vypisUmisteniTanku("Zvolte umisteni pro tank MT na hraci pole, napriklad ve formatu 1;A ", MT);
 		
-		vypisUmisteniTanku("Zvolte umisteni pro Tank MT na hraci pole napriklad ve formatu 1;A ", MT);
+		vypisUmisteniTanku("Zvolte umisteni pro tank TD na hraci pole, napriklad ve formatu 1;A ", TD);
 		
-		vypisUmisteniTanku("Zvolte umisteni pro Tank TD na hraci pole napriklad ve formatu 1;A ", TD);
-		
-		vypisUmisteniTanku("Zvolte umisteni pro Tank LT na hraci pole napriklad ve formatu 1;A ", LT);
-		
+		vypisUmisteniTanku("Zvolte umisteni pro tank LT na hraci pole, napriklad ve formatu 1;A ", LT);
 		
 		setPoleReady(vyzivatel);
 
@@ -71,25 +69,28 @@ public class GameControl {
 
 		if (!protivnik) {
 			protivnikPoleReady = true;
-			System.out.println("Nastaveni ready protivnik " + protivnik);
+//			System.out.println("Nastaveni ready protivnik " + protivnik);
 		} else {
 			vyzivatelPoleReady = true;
 
-			System.out.println("Nastaveni ready vyzivatel " + protivnik);
+//			System.out.println("Nastaveni ready vyzivatel " + protivnik);
 		}
 
-		System.out.println("Pripravena " + protivnikPoleReady + " " + vyzivatelPoleReady);
+//		System.out.println("Pripravena " + protivnikPoleReady + " " + vyzivatelPoleReady);
 
 		if (protivnikPoleReady && vyzivatelPoleReady) {
 
-			System.out.println("Pripravena " + protivnik);
+//			System.out.println("Pripravena " + protivnik);
 			netLogic.sendHraPripravena();
 			udelejTah();
+		}
+		else {
+			System.out.println("Vsechny tanky rozmisteny, pockejte na zapoceti hry.");
 		}
 	}
 
 	public void udelejTah() {
-		System.out.println("Zvol policko pro strelbu napriklad ve formatu 1;A");
+		System.out.println("Zvol policko pro strelbu:");
 		String tah = sc.nextLine();
 		
 		int x = 0;
@@ -99,7 +100,7 @@ public class GameControl {
 
 		if (umisteni2.length < 2) {
 			
-			System.out.println("Spatne zadane umisteni");
+			System.out.println("Spatne zadane souradnice.");
 			udelejTah();
 			return;
 		
@@ -112,14 +113,14 @@ public class GameControl {
 			y = prevedPismenoNaInt(umisteni2[1]);
 			
 		} catch (NumberFormatException e) {
-			System.out.println("Spatne zadane umisteni");
+			System.out.println("Spatne zadane souradnice.");
 			udelejTah();
 			return;
 		}
 
 		if (y == -1 || y > 5 || x > 5 || x < 0) {
 
-			System.out.println("Spatne zadane umisteni");
+			System.out.println("Spatne zadane souradnice.");
 			udelejTah();
 			return;
 			
@@ -151,7 +152,7 @@ public class GameControl {
 			x = Integer.parseInt(umisteni2[0]) - 1;
 			y = prevedPismenoNaInt(umisteni2[1]);
 		} catch (NumberFormatException e) {
-			System.out.println("Spatne zadane umisteni");
+			System.out.println("Spatne zadane souradnice.");
 			vypisUmisteniTanku(hlaska, tank);
 			return;
 		}
@@ -159,7 +160,7 @@ public class GameControl {
 		
 		if (y == -1 || y > 5 || x > 5 || x < 0) {
 
-			System.out.println("Spatne zadane umisteni");
+			System.out.println("Spatne zadane souradnice.");
 			vypisUmisteniTanku(hlaska, tank);
 			return;
 		} 
@@ -181,44 +182,44 @@ public class GameControl {
 		
 		if (tank.toString().equals(TypyTanku.HT.toString())) {
 			if ((x-2) < 0 ) {
-				System.out.println("Zde dany tank nemuze byt umisten");
+				System.out.println("Zde dany tank nemuze byt umisten.");
 				return false;
 			}
 						
 			}else if(y == -1){
-			System.out.println("Spatne zadane umisteni");
+			System.out.println("Spatne zadane souradnice.");
 			return false;
 		
 		}if (tank.toString().equals(TypyTanku.LT.toString())) {
 		
 			
 			if(hraciPole.getHraciPole()[x][y].isObsazeno()) {
-				System.out.println("Na danych souradnicich uz je umisten tank");
+				System.out.println("Na danych souradnicich uz je umisten jiny tank.");
 				return false;
 			}
 			
 			
 		}else if (tank.toString().equals(TypyTanku.MT.toString())) {
 			if ((x-1) < 0 ) {
-				System.out.println("Zde dany tank nemuze byt umisten");
+				System.out.println("Zde dany tank nemuze byt umisten.");
 				return false;
 			}else if(hraciPole.getHraciPole()[x][y].isObsazeno()) {
-				System.out.println("Na danych souradnicich uz je umisten tank");
+				System.out.println("Na danych souradnicich uz je umisten jiny tank.");
 				return false;
 			}else if(hraciPole.getHraciPole()[x-1][y].isObsazeno()) {
-				System.out.println("Na danych souradnicich uz je umisten tank");
+				System.out.println("Na danych souradnicich uz je umisten jiny tank");
 				return false;
 			}
 			
 		}else if (tank.toString().equals(TypyTanku.TD.toString())) {
 			if ((x-1) < 0 ) {
-				System.out.println("Zde dany tank nemuze byt umisten");
+				System.out.println("Zde dany tank nemuze byt umisten.");
 				return false;
 			}else if(hraciPole.getHraciPole()[x][y].isObsazeno()) {
-				System.out.println("Na danych souradnicich uz je umisten tank");
+				System.out.println("Na danych souradnicich uz je umisten jiny tank.");
 				return false;
 			}else if(hraciPole.getHraciPole()[x-1][y].isObsazeno()) {
-				System.out.println("Na danych souradnicich uz je umisten tank");
+				System.out.println("Na danych souradnicich uz je umisten jiny tank.");
 				return false;
 			}
 		}
@@ -265,9 +266,11 @@ public class GameControl {
 		y = prevedPismenoNaInt(umisteni2[1]);
 
 		if (!hraciPole.getHraciPole()[x][y].isObsazeno()) {
-
+			System.out.println("Souper se netrefil.");
+			
 			hraciPole.getHraciPole()[x][y].setTrefeno(true);
 			netLogic.sendMiss();
+			
 		} else {
 
 			vyhodnotZasah(hraciPole.getHraciPole()[x][y].getOdecet(), hraciPole.getHraciPole()[x][y].getTank());
@@ -279,7 +282,16 @@ public class GameControl {
 
 		int zivoty = tank.getHP() - odecet;
 		tank.setHP(zivoty);
-		System.out.println(tank.toString() + "zivoty" + zivoty);
+		if (zivoty > 0) {
+			System.out.println("Byl trefen vas " + tank.toString() + ", jeho zbyvajici zivoty: " + zivoty);
+		}
+		else if (zivoty == 0) {
+			System.out.println("Souper znicil vas " + tank.toString());
+		}
+		else {
+			System.out.println("Souper strelil do zniceneho tanku.");
+		}
+		
 
 		if (odecet == 75 && zivoty < 0) {
 			zivoty = 0;
@@ -294,9 +306,10 @@ public class GameControl {
 			hraciPole.setTankuVeHre(tanku);
 
 			if (tanku == 0) {
-				System.out.println("Jenam lito ale prohral jste ");
+				System.out.println("Jenam lito, ale prohral jste.");
 				vynuluj_hru();
-				System.out.println("Pockejte na protihrace");
+				System.out.println();
+				System.out.println("Pockejte na volneho hrace.");
 			}
 
 		} else {

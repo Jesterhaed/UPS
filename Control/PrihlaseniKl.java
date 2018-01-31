@@ -4,20 +4,20 @@ import java.util.Scanner;
 
 import Run.TanksRun;
 
-public class Actions {
+public class PrihlaseniKl {
 
-	private TanksRun mMR;
-	private LogginLogics logLogic;
+	private TanksRun tR;
+	private LogikaPrihlaseni logLogic;
 	private Scanner sc;
-	private NetworkLogics netLogic;
+	private SitLogika netLogic;
 	
 	private String name;
-	private GameControl gameControl;
+	private HraLogika gameControl;
 	
-	public Actions(TanksRun mMR, LogginLogics logLogic, NetworkLogics netLogic, GameControl gameControl) {
-		this.mMR = mMR;
+	public PrihlaseniKl(TanksRun tR, LogikaPrihlaseni logLogic, SitLogika netLogic, HraLogika gameControl) {
+		this.tR = tR;
 		this.logLogic = logLogic;
-		this.sc = mMR.getSc();
+		this.sc = tR.getSc();
 		this.netLogic = netLogic;
 		this.gameControl = gameControl;
 		
@@ -34,7 +34,7 @@ public class Actions {
 		String heslo2 = sc.nextLine();
 		
 		if(!logLogic.confirmDataInForm(jmeno, heslo1, heslo2)) {
-			mMR.regOrLog();
+			tR.regOrLog();
 			return;
 		}
 		
@@ -49,7 +49,7 @@ public void prihlaseni() {
 		System.out.println("Zadej heslo");
 		String heslo1 = sc.nextLine();	
 		if(!logLogic.confirmDataInForm(jmeno, heslo1)) {
-			mMR.regOrLog();
+			tR.regOrLog();
 			return;
 		}
 		name = jmeno;
@@ -59,8 +59,8 @@ public void prihlaseni() {
 
 public void provedAkciNaPozvani(String jmeno) {
 	
-	System.out.println("Hrac " + jmeno + " vas pozval do hry");
-	System.out.println("Pro prijeti zmacknete 1 pro odmitnuti 2");
+	System.out.println("Hrac " + jmeno + " vas pozval do hry.");
+	System.out.println("Pro prijeti zmacknete 1, pro odmitnuti 2.");
 
 	int volba = 0;
 
@@ -70,7 +70,7 @@ public void provedAkciNaPozvani(String jmeno) {
 		
 	} catch (Exception e) {
 		
-		System.out.println("Pro potvrzeni volby musite stisknout cislo ");
+		System.out.println("Pro potvrzeni volby musite stisknout cislo.");
 		provedAkciNaPozvani(jmeno);
 		return;
 	}
@@ -89,7 +89,6 @@ public void provedAkciNaPozvani(String jmeno) {
 }
 
 
-
 public String getName() {
 	return name;
 }
@@ -98,9 +97,6 @@ public String getName() {
 public void setName(String name) {
 	this.name = name;
 }
-
-
-
 
 
 }

@@ -1,6 +1,6 @@
 package Game;
 
-import Control.GameControl;
+import Control.HraLogika;
 
 public class HraciPolicko {
 	
@@ -12,9 +12,9 @@ public class HraciPolicko {
 	
 	private IdPolicka id;
 	
-	private GameControl gameControl;
+	private HraLogika gameControl;
 	
-	public HraciPolicko(GameControl gameControl, IdPolicka id){
+	public HraciPolicko(HraLogika gameControl, IdPolicka id){
 		
 		this.id = id;
 		this.gameControl = gameControl;
@@ -28,7 +28,6 @@ public class HraciPolicko {
 		obsazeno = true;
 		
 	}
-
 
 	@Override
 	public String toString() {
@@ -97,9 +96,5 @@ public class HraciPolicko {
 	public void setOdecet(int odecet) {
 		this.odecet = odecet;
 	}
-	
-	
-	
-	
 	
 }

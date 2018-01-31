@@ -1,25 +1,23 @@
 package Game;
 
-import com.sun.org.apache.xml.internal.security.encryption.AgreementMethod;
+//import com.sun.org.apache.xml.internal.security.encryption.AgreementMethod;
 
-import Control.GameControl;
+import Control.HraLogika;
 
 public class HraciPole {
 	
 	
-	private HraciPolicko hraciPole[][];
-	private boolean vyzivatelovo;	
+	private HraciPolicko hraciPole[][];	
 	private Hrac vyzivatel;
 	private Hrac protihrac;
 	private int tankuVeHre = 4;
 	
-	private GameControl gameControl;
+	private HraLogika gameControl;
 	
-	public HraciPole(GameControl gameControl, boolean vyzivatelovo){
+	public HraciPole(HraLogika gameControl, boolean vyzivatelovo){
 		
-		this.hraciPole = new HraciPolicko[GameControl.velikostPole][GameControl.velikostPole];
+		this.hraciPole = new HraciPolicko[HraLogika.velikostPole][HraLogika.velikostPole];
 		
-		this.vyzivatelovo = vyzivatelovo;
 		this.gameControl = gameControl;
 		this.vyzivatel = vyzivatel;
 		this.protihrac = protihrac;
@@ -46,7 +44,7 @@ public class HraciPole {
 	public void vypisPole() {
 		
 		for (int i = 0; i < gameControl.velikostPole; i++) {
-			System.out.println("-------------------");	
+			System.out.println("---------------------");	
 			System.out.print((i+1));
 			for (int j = 0; j < gameControl.velikostPole; j++) {
 				
@@ -57,7 +55,7 @@ public class HraciPole {
 			System.out.println();
 	
 		}
-		System.out.println("   A|  B| C| D| E| F ");
+		System.out.println("    A| B| C| D| E| F ");
 	}
 	
 	
