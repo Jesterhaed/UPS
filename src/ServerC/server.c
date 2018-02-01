@@ -55,7 +55,7 @@ void help() {
 */
 void sigint_handler(int sig) {
 
-	printf("Ukonceni procesu %d\.n", getpid());
+	printf("Ukonceni procesu %d\n", getpid());
 	pthread_mutex_destroy(&lock);
 	exit(0);
 }
@@ -72,6 +72,7 @@ void nacti_soubor() {
 	if (file == NULL) {
 		printf("ERR: Soubor neexistuje!");
 	}
+
 }
 
 void write_log(char* message) {
@@ -372,8 +373,8 @@ void send_message(User_conected* user, char* message) {
 }
 void invalid_input(User_conected* user) {
 
-	printf("Nevalidni vstup.\n");
-	send_message(user, "Nevalidni vstup.\n");
+	printf("Nevalidni vstup\n");
+	send_message(user, "Nevalidni vstup\n");
 }
 /*
 * nickname_control(char* nickname)
@@ -863,7 +864,6 @@ void pole_ready(User_conected* user) {
 	}
 
 }
-
 /*
 * good_color_to_game(User_conected* user, char* message1)
 *
@@ -1057,34 +1057,25 @@ void zmena_hrace(User_conected* user) {
 *
 */
 void logout_user(User_conected* user, char* ret2) {
-//	printf("Zprava 0");
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 	char* pom = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
 	char* pom1 = (char*)malloc(MAX_CONECTED * 60 + MAX_CONECTED);
-//	printf("Krok 1");
 	if (user->game != NULL) {
-//		printf("Krok 2");
 		if (user->game->free == 1) {
-//			printf("Krok 3");
 			sprintf(pom, "%d", user->game->id);
 			strcpy(message, "Logout,");
 			strcat(message, pom);
 			strcat(message, ",\n");
-//			printf("Krok 4");
 			user->isLog = 0;
 			int index;
 
-//			printf("Krok 5");
 			if (strcmp(user->game->chellanger, user->nickname) == 0) {
-//				printf("Krok 6");
 				index = user->game->gamer2;
 			}
 			else {
-//				printf("Krok 7");
 				index = user->game->gamer1;
 			}
-//			printf("Krok 8");
 			sprintf(pom1, "Odhlasen uzivatel: %s\n)", user->nickname);
 			write_log(pom1);
 			conected_users[index]->protihracLogOut = 1;
@@ -1101,25 +1092,18 @@ void logout_user(User_conected* user, char* ret2) {
 		printf("user %s  ", user->nickname);
 		user->isLog = 0;
 	}
-//	printf("Krok 9");
 	char *ret3 = strchr(ret2, ',');
 	if (ret3 != NULL) {
 		*ret3 = '\0';
 		ret3++;
 	}
 
-//	printf("Krok 10");
-
 	if (strcmp(ret2, "end") == 0) {
 	free(pom);
 	free(pom1);
 
-	printf("Ukonceni vlakna na serveru.\n");
-	write_log("Ukonceni vlakna na serveru.\n");
-	pthread_join(pthread_self(), PTHREAD_CANCELED);
-
-	free(message);
-//		printf("Krok 11");
+		write_log("Server ukoncil vlakno. \n");
+		pthread_join(pthread_self(), PTHREAD_CANCELED);
 	}
 
 }
@@ -1156,7 +1140,7 @@ void receive_challenge(User_conected* user, char* message) {
 	}
 	else {
 		invalid_input(user);
-		sprintf(pom, "Prijata zprava :%s, nevalidni vstup.\n", message);
+		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message);
 		write_log(pom);
 	}
 
@@ -1210,7 +1194,7 @@ void receive_game(User_conected* user, char* message) {
 	}
 	else {
 		invalid_input(user);
-		sprintf(pom, "Prijata zprava :%s, nevalidni vstup.\n", message);
+		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message);
 		write_log(pom);
 	}
 	if (strcmp(message, "poleReady") == 0) {
@@ -1249,7 +1233,7 @@ void receive_game(User_conected* user, char* message) {
 	}
 	else {
 		invalid_input(user);
-		sprintf(pom, "Prijata zprava :%s, nevalidni vstup.\n", message);
+		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message);
 		write_log(pom);
 	}
 
@@ -1279,7 +1263,7 @@ int control_player_list(char* message) {
 
 void delete_game(User_conected* user, char* message) {
 
-	printf("Vymazani hry.");
+	printf("Delete game");
 
 	long val;
 	char *next;
@@ -1303,8 +1287,6 @@ void delete_game(User_conected* user, char* message) {
 	int i = val;
 	int id1 = game[i]->gamer1;
 	int id2 = game[i]->gamer2;
-
-//	printf("Pred uzivateli");
 
 
 	if (conected_users[id1] != NULL) {
@@ -1373,6 +1355,8 @@ void *createThread(void *incoming_socket) {
 		if (strcmp(buffer, "Registrace") == 0) {
 
 			reg_user(ret2, user);
+
+
 		}
 		else if (strcmp(buffer, "CheckConnect") == 0) {
 
@@ -1402,8 +1386,11 @@ void *createThread(void *incoming_socket) {
 			send_free_players(user);
 
 		}
-		else if (strcmp(buffer, "Game") == 0) {
+		else if (strcmp(buffer, "Challenge") == 0) {
+			receive_challenge(user, ret2);
 
+		}
+		else if (strcmp(buffer, "Game") == 0) {
 			if (user->protihracLogOut != 1) {
 
 				receive_game(user, ret2);
@@ -1469,18 +1456,16 @@ void print_err(char* msg) {
 void start_server(int argc, char** argv) {
 
 	if (argc == 1 || argc == 3) {
-		printf("Start serveru.\n");
+		printf("Start server\n");
 		if ((nacti_Port(argc, argv) == 0) && (read_address(argc, argv) == 0)) {
 			time(&log_time);
 			signal(SIGINT, sigint_handler);
 			;
 			printf("Server bezi na portu %d\n", srv_port);
-			printf("Pro zmenu parametru spuste server takto.\n");
-			help();
 		}
 		else {
 
-			printf("Stop serveru.\n\n");
+			printf("Stop server\n\n");
 
 			help();
 			exit(1);
@@ -1564,9 +1549,9 @@ int main(int argc, char** argv) {
 		}
 
 		char* message = "Connect\n";
-		printf("connection from %s:%i\n", inet_ntoa(incoming_addr.sin_addr),
+		printf("Spojeni od %s:%i\n", inet_ntoa(incoming_addr.sin_addr),
 			ntohs(incoming_addr.sin_port));
-		sprintf(pom, "connection from %s:%i\n", inet_ntoa(incoming_addr.sin_addr), ntohs(incoming_addr.sin_port));
+		sprintf(pom, "Spojeni od %s:%i\n", inet_ntoa(incoming_addr.sin_addr), ntohs(incoming_addr.sin_port));
 
 		write_log(pom);
 
@@ -1575,7 +1560,7 @@ int main(int argc, char** argv) {
 		/* create a second thread which executes inc_x(&x) */
 		if (pthread_create(&thread, NULL, createThread, &incoming_sock)) {
 
-			fprintf(stderr, "Error creating thread\n");
+			fprintf(stderr, "Chyba pri vytvareni vlakna.\n");
 			write_log("Chyba serveru \"creating thread\" \n ");
 			return 1;
 
