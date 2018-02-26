@@ -277,7 +277,6 @@ int sgetline(int fd, char ** out) {
 
 		if (ret < 1) {
 			// error or disconnect
-			free(buffer);
 			return -1;
 		}
 
@@ -294,7 +293,6 @@ int sgetline(int fd, char ** out) {
 			newbuf = realloc(buffer, buf_size);
 
 			if (NULL == newbuf) {
-				free(buffer);
 				return -1;
 			}
 
@@ -313,6 +311,8 @@ int sgetline(int fd, char ** out) {
 	str_cut(buffer, bytesloaded, distinction);
 
 	*out = buffer; // complete line
+
+	
 	return bytesloaded;
 }
 
@@ -375,6 +375,8 @@ void invalid_input(User_conected* user) {
 
 	printf("Nevalidni vstup\n");
 	send_message(user, "Nevalidni vstup\n");
+	printf("Ukoncuji spojeni \n");
+	
 }
 /*
 * nickname_control(char* nickname)
@@ -1349,7 +1351,7 @@ void *createThread(void *incoming_socket) {
 		}
 		else {
 			invalid_input(user);
-			continue;
+			break;
 		}
 
 		if (strcmp(buffer, "Registrace") == 0) {
@@ -1381,7 +1383,7 @@ void *createThread(void *incoming_socket) {
 		else if (strcmp(buffer, "PlayerList") == 0) {
 			if (control_player_list(ret2) == 1) {
 				invalid_input(user);
-				continue;
+				break;
 			}
 			send_free_players(user);
 
@@ -1402,6 +1404,7 @@ void *createThread(void *incoming_socket) {
 			invalid_input(user);
 			sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", buffer);
 			write_log(pom);
+			break;
 
 		}
 

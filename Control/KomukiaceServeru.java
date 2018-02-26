@@ -7,6 +7,10 @@ import Run.TanksRun;
 
 public class KomukiaceServeru implements IKomunikaceServeru {
 
+	
+	 public static final int failCount = 5; 
+	
+	
 	/** Globani promenne tridy **/
 
 	private TanksRun tR;
@@ -40,11 +44,19 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 	public void processData(String data) {
 
 //		System.out.println("Data: " + data + " : " + netLog.getName());
-
+	int failCounter = 0;
+	
 		if (!messageCon.is_valid(data)) {
-
+			
 			System.out.println("Nevalidni vstup!");
+		
+			failCounter++;
+			
 			return;
+		}
+		
+		if (failCounter == 5 ) {
+			netLogic.ukonciSpojeniSChybnymServerem();
 		}
 
 		String[] pomData = data.split(",");

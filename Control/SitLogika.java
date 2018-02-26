@@ -38,6 +38,15 @@ public class SitLogika {
 		comm.send("PlayerList,get,\n");
 
 	}
+	
+	
+	public void ukonciSpojeniSChybnymServerem() {
+		
+		System.out.println(KomukiaceServeru.failCount + " chybnych zprav od serveru ukoncuji spojeni se serverem.");
+		comm.endConection();
+		tR.prihlaseni();	
+		
+	}
 
 	/**
 	 * Odesle zpravu s informaci o odhlaseni uzivatel
