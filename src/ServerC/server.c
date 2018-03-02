@@ -246,6 +246,7 @@ int str_cut(char *str, int begin, int len) {
 		len = l - begin;
 	if (begin + len > l)
 		len = l - begin;
+
 	memmove(str + begin, str + begin + len, l - len + 1);
 
 	return len;
@@ -260,7 +261,7 @@ int str_cut(char *str, int begin, int len) {
 * Nacte zpravu
 */
 int sgetline(int fd, char ** out) {
-	int buf_size = 128;
+	int buf_size = 1024;
 	int bytesloaded = 0;
 	int ret;
 	int i = 0;
@@ -270,18 +271,19 @@ int sgetline(int fd, char ** out) {
 
 	if (NULL == buffer)
 		return -1;
-
-	while (i != 127) {
+	while (i != 1023) {
 		// read a single byte
 		ret = read(fd, &buf, 1);
 
 		if (ret < 1) {
 			// error or disconnect
 			return -1;
+
 		}
 
 		// has end of line been reached?
 		if (buf == '\n') {
+
 			break; // yes
 		}
 
@@ -290,6 +292,7 @@ int sgetline(int fd, char ** out) {
 		// is more memory needed?
 		if (bytesloaded >= buf_size) {
 			buf_size += 128;
+
 			newbuf = realloc(buffer, buf_size);
 
 			if (NULL == newbuf) {
@@ -301,6 +304,8 @@ int sgetline(int fd, char ** out) {
 		i++;
 	}
 
+
+
 	// if the line was terminated by "\r\n", ignore the
 	// "\r". the "\n" is not in the buffer
 	if ((bytesloaded) && (buffer[bytesloaded - 1] == '\r'))
@@ -308,6 +313,7 @@ int sgetline(int fd, char ** out) {
 
 	int len = strlen(buffer);
 	int distinction = len - bytesloaded;
+
 	str_cut(buffer, bytesloaded, distinction);
 
 	*out = buffer; // complete line
@@ -327,7 +333,7 @@ void pull_user(User_conected* user) {
 	pthread_mutex_unlock(&lock);
 
 	free(user);
-
+	
 }
 
 /*
@@ -1325,7 +1331,7 @@ void delete_game(User_conected* user, char* message) {
 void *createThread(void *incoming_socket) {
 
 	char* buffer = malloc(1024);
-	char* pom = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
+	char* pom = (char*)malloc(1024);
 
 	int socket = *(int *)incoming_socket;
 	User_conected* user = put_user(socket);
@@ -1353,6 +1359,7 @@ void *createThread(void *incoming_socket) {
 			invalid_input(user);
 			break;
 		}
+
 
 		if (strcmp(buffer, "Registrace") == 0) {
 
@@ -1405,15 +1412,18 @@ void *createThread(void *incoming_socket) {
 			sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", buffer);
 			write_log(pom);
 			break;
-
 		}
 
 	}
-
+	
 	free(pom);
+	pom = NULL;
 	free(buffer);
+	buffer = NULL;
 	pull_user(user);
 	close(socket);
+	socket = NULL;
+	
 	return NULL;
 }
 
