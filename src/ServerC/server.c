@@ -318,7 +318,7 @@ int sgetline(int fd, char ** out) {
 
 	*out = buffer; // complete line
 
-	
+
 	return bytesloaded;
 }
 
@@ -333,7 +333,7 @@ void pull_user(User_conected* user) {
 	pthread_mutex_unlock(&lock);
 
 	free(user);
-	
+
 }
 
 /*
@@ -382,7 +382,7 @@ void invalid_input(User_conected* user) {
 	printf("Nevalidni vstup\n");
 	send_message(user, "Nevalidni vstup\n");
 	printf("Ukoncuji spojeni \n");
-	
+
 }
 /*
 * nickname_control(char* nickname)
@@ -393,7 +393,7 @@ void invalid_input(User_conected* user) {
 int nickname_control(char* nickname, User_conected* user) {
 
 	if (strlen(nickname) > 30 || strlen(nickname) == 0) {
-		send_message(user, "Registrace,bad2,invalid_nickname\n");
+		send_message(user, "Registrace,no,invalid_nickname\n");
 		return 0;
 	}
 	return 1;
@@ -406,7 +406,7 @@ int nickname_control(char* nickname, User_conected* user) {
 */
 int passwd_control(char* passwd, User_conected* user) {
 	if (strlen(passwd) > 32 || strlen(passwd) < 32 || strlen(passwd) == 0) {
-		send_message(user, "Registrace,bad2,invalid_passwd\n");
+		send_message(user, "Registrace,no,invalid_passwd\n");
 		return 0;
 	}
 	return 1;
@@ -438,12 +438,6 @@ void reg_user(char* buffer, User_conected* user) {
 		return;
 	}
 
-	char *ret2 = strchr(ret, ',');
-
-	if (ret2 != NULL) {
-		invalid_input(user);
-	}
-
 	pthread_mutex_lock(&lock);
 	int i;
 	for (i = 0; i < MAX_CONECTED; ++i) {
@@ -451,7 +445,7 @@ void reg_user(char* buffer, User_conected* user) {
 		if (database_users[i] != NULL
 			&& strcmp(database_users[i]->nickname, buffer) == 0) {
 
-			send_message(user, "Registrace,bad1,This nickname is exist,\n");
+			send_message(user, "Registrace,no,used_nick\n");
 			pthread_mutex_unlock(&lock);
 			return;
 
@@ -476,7 +470,7 @@ void reg_user(char* buffer, User_conected* user) {
 			}
 		}
 
-		send_message(user, "Registrace,yes,succes,\n");
+		send_message(user, "Registrace,yes,success\n");
 		sprintf(pom, "Registrace uzivatele: %s\n", reg_user->nickname);
 		write_log(pom);
 	}
@@ -589,12 +583,6 @@ void log_control(User_conected* user, char* buffer) {
 		invalid_input(user);
 		return;
 	}
-	char *ret2 = strchr(ret, ',');
-
-	if (ret2 != NULL) {
-		invalid_input(user);
-		return;
-	}
 
 	int i = 0;
 	for (i = 0; i < MAX_CONECTED; ++i) {
@@ -605,7 +593,7 @@ void log_control(User_conected* user, char* buffer) {
 
 				user->isLog = 1;
 				strcpy(user->nickname, buffer);
-				send_message(user, "Log,yes,succes\n");
+				send_message(user, "Log,yes,success\n");
 
 				sprintf(pom, "Prihlaseny uzivatel: %s\n", user->nickname);
 				write_log(pom);
@@ -617,10 +605,10 @@ void log_control(User_conected* user, char* buffer) {
 
 	if (user->isLog == 0) {
 		if (is_bad_loggin(buffer) == 0) {
-			send_message(user, "Log,no,badLog\n");
+			send_message(user, "Log,no,bad_log\n");
 		}
 		else {
-			send_message(user, "Log,no,badPasswd\n");
+			send_message(user, "Log,no,bad_passwd\n");
 		}
 	}
 
@@ -657,7 +645,7 @@ void send_free_players(User_conected* user) {
 		}
 	}
 
-	finish = strcat(message, ",\n");
+	finish = strcat(message, "\n");
 	send_message(user, finish);
 	sleep(1);
 
@@ -668,17 +656,7 @@ void send_free_players(User_conected* user) {
 
 int control_chellange(char* player) {
 
-	char *ret1 = strchr(player, ',');
-
-	if (ret1 != NULL) {
-		*ret1 = '\0';
-		ret1++;
-	}
-	else {
-		return 1;
-	}
-
-	if (strlen(ret1) > 0) {
+	if (player == NULL || strlen(player) > 30 || strlen(player) < 1) {
 		return 1;
 	}
 	return 0;
@@ -704,11 +682,6 @@ void send_invitation(User_conected* user, char* player) {
 
 	strcpy(message, "Challenge,");
 
-	char *ret1 = strchr(player, ',');
-	if (ret1 != NULL) {
-		*ret1 = '\0';
-		ret1++;
-	}
 
 	for (i = 0; i < MAX_CONECTED; ++i) {
 
@@ -718,13 +691,14 @@ void send_invitation(User_conected* user, char* player) {
 				if (conected_users[i]->play != 1) {
 
 					finish = strcat(message, user->nickname);
-					message = strcat(finish, ",invite,\n");
+					message = strcat(finish, ",invite\n");
 					send_message(conected_users[i], message);
 
 				}
+				/* automaticke odmitnuti, pokud je hrac ve hre */
 				else {
 					char* message1 = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
-					strcpy(message1, "Challenge,refuse,protihrac,\n");
+					strcpy(message1, "Challenge,refuse,protihrac\n");
 					send_message(user, message1);
 					free(message1);
 				}
@@ -791,11 +765,7 @@ void send_accept_chellange(User_conected* user, char* player) {
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
 	char* finish = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
-	char *ret1 = strchr(player, ',');
-	if (ret1 != NULL) {
-		*ret1 = '\0';
-		ret1++;
-	}
+
 	strcpy(message, "Challenge,");
 	for (i = 0; i < MAX_CONECTED; ++i) {
 
@@ -803,7 +773,7 @@ void send_accept_chellange(User_conected* user, char* player) {
 			if (strcmp(conected_users[i]->nickname, player) == 0) {
 				find_free_game(conected_users[i], user);
 				finish = strcat(message, user->nickname);
-				message = strcat(finish, ",accept,\n");
+				message = strcat(finish, ",accept\n");
 				send_message(conected_users[i], message);
 			}
 
@@ -833,27 +803,18 @@ void send_refuse_chellange(User_conected* user, char* player) {
 
 	strcpy(message, "Challenge,");
 
-	char *ret2 = strchr(player, ',');
-	if (ret2 != NULL) {
-		*ret2 = '\0';
-		ret2++;
-	}
 	for (i = 0; i < MAX_CONECTED; ++i) {
 
 		if (conected_users[i] != NULL) {
 			if (strcmp(conected_users[i]->nickname, player) == 0) {
 
 				finish = strcat(message, user->nickname);
-				message = strcat(finish, ",refuse,\n");
+				message = strcat(finish, ",refuse\n");
 
 				send_message(conected_users[i], message);
-
 			}
-
 		}
-
 	}
-
 }
 
 /*
@@ -1249,23 +1210,8 @@ void receive_game(User_conected* user, char* message) {
 }
 
 int control_player_list(char* message) {
-	char *ret = strchr(message, ',');
-
-	if (ret != NULL) {
-		*ret = '\0';
-		ret++;
-	}
-	else {
-		return 1;
-	}
 	if (strcmp(message, "get") != 0)
 		return 1;
-
-	char* ret1 = strchr(ret, ',');
-	if (ret1 != NULL) {
-		return 1;
-	}
-
 	return 0;
 }
 
@@ -1415,7 +1361,7 @@ void *createThread(void *incoming_socket) {
 		}
 
 	}
-	
+
 	free(pom);
 	pom = NULL;
 	free(buffer);
@@ -1423,7 +1369,7 @@ void *createThread(void *incoming_socket) {
 	pull_user(user);
 	close(socket);
 	socket = NULL;
-	
+
 	return NULL;
 }
 

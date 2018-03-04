@@ -203,7 +203,8 @@ public class LogikaPrihlaseni {
 		System.out.println(" Nezadane jmeno.");
 
 		}else if(nickname.length() > 30){
-		System.out.println("Prilis dlouhe heslo.");
+			System.out.println("Tato prezdivka je prilis dlouha!");
+			System.out.println("Zvolte nick do triceti znaku.");
 		}else {
 			this.nickname = nickname;
 			return true;
@@ -265,7 +266,6 @@ public class LogikaPrihlaseni {
 			if (!passwd.equals(passwd2)) {
 
 				System.out.println("Chyba prihlaseni.");
-				System.out.println("SpatnuserNicke heslo!");
 				System.out.println("Hesla se neschoduji!");
 
 			} else {

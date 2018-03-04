@@ -45,7 +45,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 	public void processData(String data) {
 		
 
-	//System.out.println("Data: " + data + " : " + netLogic.getName());
+	System.out.println("Data: " + data + " : " + netLogic.getName());
 	
 		
 		
@@ -82,23 +82,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 			receiveRegistrace(pomData);
 			break;
 		case "Log":
-
-			if (pomData[1].contains("yes")) {
-				logLogic.setLog(true);
-				netLogic.setName(action.getName());
-				System.out.println("Vitej ve hre hraci " + action.getName());
-				
-				netLogic.getFreePlayerList();
-				
-				
-			} else if (pomData[1].contains("no") && pomData[2].contains("badLog")) {
-				System.out.println("Tato prezdivka neni zaregistrovana.");
-				tR.regOrLog();
-			} else {
-				System.out.println("Spatne heslo.");
-				tR.regOrLog();
-			}
-
+			receiveLog(pomData);
 			break;
 		case "PlayerList":
 
@@ -168,22 +152,55 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 	 * @param pomData
 	 */
 	private void receiveRegistrace(String[] pomData) {
-
-		if (pomData[1].contains("bad")) {
-			System.out.println("Tato prezdivka je pouzita.");
-			System.out.println("Vyberte si jiny nick!");
-			tR.regOrLog();
-		} else if (pomData[1].contains("bad2")) {
-			System.out.println("Tato prezdivka je prilis dlouha!");
-			System.out.println("Zvolte nick do triceti znaku.");
-			tR.regOrLog();
-		} else {
-
+		if (pomData[1].contains("no")) {
+			if (pomData[2].contains("used_nick")) {
+				System.out.println("Tato prezdivka je pouzita.");
+				System.out.println("Vyberte si jiny nick!");
+				tR.regOrLog();
+			} else if (pomData[2].contains("invalid_passwd")) {
+				System.out.println("Poslan neplatny format hesla!");
+				tR.regOrLog();
+			} else if (pomData[2].contains("invalid_nickname")) {
+				System.out.println("Prilis dlouhy nick!");
+				tR.regOrLog();
+			}
+		}
+		else if (pomData[1].contains("yes")){
 			System.out.println("Jste registrovan");
 			tR.regOrLog();
 		}
-
+		else {
+			tR.regOrLog();
+		}
 	}
+	
+	/**
+	 * Pomocna metoda pro zpracovani zprav o prihlaseni
+	 * 
+	 * @param pomData
+	 */
+	private void receiveLog(String[] pomData) {
+		if (pomData[1].contains("yes")) {
+			logLogic.setLog(true);
+			netLogic.setName(action.getName());
+			System.out.println("Vitej ve hre hraci " + action.getName());
+			
+			netLogic.getFreePlayerList();
+			
+		} else if (pomData[1].contains("no")) {
+			if (pomData[2].contains("bad_log")) {
+				System.out.println("Tato prezdivka neni zaregistrovana.");
+				tR.regOrLog();
+			}
+			else if (pomData[2].contains("bad_passwd")) {
+				System.out.println("Spatne heslo.");
+				tR.regOrLog();
+			}				
+		} else {				
+			tR.regOrLog();
+		}
+	}
+	
 
 	/**
 	 * Pomocna metoda pro zpracovani zprav o hre

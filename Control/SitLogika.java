@@ -35,7 +35,7 @@ public class SitLogika {
 	 */
 	public void getFreePlayerList() {
 
-		comm.send("PlayerList,get,\n");
+		comm.send("PlayerList,get\n");
 
 	}
 	
@@ -85,7 +85,7 @@ public class SitLogika {
 	 * @param playerName
 	 */
 	public void createGame(String playerName) {
-		comm.send("Challenge,invite," + playerName + ",\n");
+		comm.send("Challenge,invite," + playerName + "\n");
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class SitLogika {
 	 */
 	public void challengeAccepted(String player) {
 
-		comm.send("Challenge,accept," + player + ",\n");
+		comm.send("Challenge,accept," + player + "\n");
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class SitLogika {
 	 */
 	public void challengeRefuse(String player) {
 
-		comm.send("Challenge,refuse," + player + ",\n");
+		comm.send("Challenge,refuse," + player + "\n");
 
 	}
 
