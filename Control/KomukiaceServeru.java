@@ -8,7 +8,7 @@ import Run.TanksRun;
 public class KomukiaceServeru implements IKomunikaceServeru {
 
 	
-	 public static final int failCount = 5; 
+	public static final int failCount = 5; 
 	
 	
 	/** Globani promenne tridy **/
@@ -21,6 +21,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 	private PrihlaseniKl action;
 	private HraLogika gameControl;
 
+	private int failCounter = 0;
 	/**
 	 * Inicializace objektu tR, lLog, netLog
 	 * 
@@ -42,23 +43,24 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 	 * Metoda pro zpracovani prijatych zprav ze serveru
 	 */
 	public void processData(String data) {
+		
 
-//		System.out.println("Data: " + data + " : " + netLog.getName());
-	int failCounter = 0;
+	//System.out.println("Data: " + data + " : " + netLogic.getName());
 	
+		
+		
 		if (!messageCon.is_valid(data)) {
 			
 			System.out.println("Nevalidni vstup!");
-		
 			failCounter++;
-			
+			if (failCounter == 5 ) {
+				failCounter = 0;
+				netLogic.ukonciSpojeniSChybnymServerem();						
+			}
 			return;
 		}
-		
-		if (failCounter == 5 ) {
-			netLogic.ukonciSpojeniSChybnymServerem();
-		}
 
+		
 		String[] pomData = data.split(",");
 
 		switch (pomData[0]) {

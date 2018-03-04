@@ -39,7 +39,6 @@ public class PrihlaseniKl {
 		}
 		
 		netLogic.sendRegForm(jmeno, heslo1);
-		
 	}
 	
 public void prihlaseni() {
@@ -97,6 +96,5 @@ public String getName() {
 public void setName(String name) {
 	this.name = name;
 }
-
 
 }

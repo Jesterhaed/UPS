@@ -74,7 +74,7 @@ public class TCPComm implements ITCP, Runnable {
 			m_output = socket.getOutputStream();
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			m_observer.processData("Connect,");
-						for (;;) {
+			for (;;) {
 				try {
 
 					String data = new String();

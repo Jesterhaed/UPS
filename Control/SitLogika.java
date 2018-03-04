@@ -42,10 +42,10 @@ public class SitLogika {
 	
 	public void ukonciSpojeniSChybnymServerem() {
 		
-		System.out.println(KomukiaceServeru.failCount + " chybnych zprav od serveru ukoncuji spojeni se serverem.");
-		comm.endConection();
-		tR.prihlaseni();	
-		
+		System.out.println(KomukiaceServeru.failCount + " chybnych zprav od serveru, ukoncuji klienta.");
+		//comm.endConection();
+		System.exit(0);
+		//tR.prihlaseni();
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class SitLogika {
 	public void signOutUser(String message) {
 
 		lLog.setLog(false);
-		comm.send(message);
+		comm.send(message);		
 	}
 
 	/**
