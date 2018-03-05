@@ -45,7 +45,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 	public void processData(String data) {
 		
 
-	System.out.println("Data: " + data + " : " + netLogic.getName());
+//	System.out.println("Data: " + data + " : " + netLogic.getName());
 	
 		
 		
@@ -65,7 +65,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 
 		switch (pomData[0]) {
 
-		case "Nevalidni vstup":
+		case "InvalidInput":
 			System.out.println("Odeslana nevalidni zprava.");
 			break;
 		case "NoServer":
@@ -78,14 +78,13 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 			System.out.println("Navazano spojeni se serverem.");
 			tR.regOrLog();
 			break;
-		case "Registrace":
+		case "Registration":
 			receiveRegistrace(pomData);
 			break;
 		case "Log":
 			receiveLog(pomData);
 			break;
 		case "PlayerList":
-
 			if (pomData.length > 1) {
 				vypisHrace(pomData);				
 			} else {
@@ -93,10 +92,10 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 			}
 
 			break;
-		case "Logout":
-			System.out.println("Hrac" + netLogic.getName() +  "opustil hru");			
+		case "LogOut":
+			System.out.println("Hrac" + netLogic.getName() +  "opustil hru.");			
 			netLogic.deleteGameLeave(Integer.parseInt(pomData[1]));
-			
+			gameControl.vynuluj_hru();
 			System.out.println("Budete presmerovan na vyber jineho hrace.");
 			System.out.println("Pro ukonceni stisknete Ctrl + C.");
 			
@@ -210,24 +209,24 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 	private void receive_game(String[] pomData) {
 
 	
-		if (pomData[1].contains("poleReady")) {
+		if (pomData[1].contains("opponent")) {
 			gameControl.setPoleReady(false);
 			
-		} else if (pomData[1].contains("pripravena")) {
+		} else if (pomData[1].contains("challenger")) {
 
 			System.out.println("Hraje vyzivatel, pockejte na jeho tah.");
 		
-		} else if (pomData[1].contains("tah")) {
+		} else if (pomData[1].contains("shot")) {
 
 			gameControl.vyhodnotTah(pomData[2]);
 
-		} else if (pomData[1].contains("trefa")) {
+		} else if (pomData[1].contains("hit")) {
 		
 			System.out.println("Trefen tank, ubrano " + pomData[2] + " HP.");
 			System.out.println("Na tahu je souper.");
 			netLogic.sendHraj();
 		
-		} else if (pomData[1].contains("zniceno")) {
+		} else if (pomData[1].contains("destroyed")) {
 			
 			System.out.println("Znicen tank: " + pomData[2]);
 		
@@ -245,7 +244,6 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 				netLogic.sendHraj();				
 			}
 			
-
 		
 		} else if (pomData[1].contains("miss")) {
 			
@@ -253,7 +251,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 			System.out.println("Na tahu je souper.");
 			netLogic.sendHraj();
 		
-		} else if (pomData[1].contains("hraj")) {
+		} else if (pomData[1].contains("play")) {
 	
 			gameControl.udelejTah();
 			

@@ -35,9 +35,9 @@ public class TanksRun{
 		
 		   Signal.handle(new Signal("INT"), new SignalHandler() {
 	            public void handle(Signal sig) {
-	                System.out.format("\nUkonceni programu.");
+	                System.out.format("\nUkonceni programu.\n");
 	                if (logLogics.isLog()) {
-						netLog.signOutUser("LogOut,end,\n");
+						netLog.signOutUser("LogOut,end\n");
 					}
 	                System.exit(0);
 	            }

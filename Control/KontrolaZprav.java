@@ -36,27 +36,24 @@ public class KontrolaZprav {
 
 	private boolean messageBlockControl(String[] pomData) {
 		switch (pomData[0]) {
-		case "Nevalidni vstup":
+		case "InvalidInput":
 			if (pomData.length > 1)
 				return false;
-
 			break;
 		case "NoServer":
 			if (pomData.length > 1)
 				return false;
-
 			break;
 		case "CheckConnect":
 
-			if (pomData.length > 1)
+			if (pomData.length > 2)
 				return false;
 			break;
 		case "Connect":
 			if (pomData.length > 1)
 				return false;
 			break;
-		case "Registrace":
-
+		case "Registration":
 			if (pomData.length < 3 || pomData.length > 3) {
 				return false;
 			}
@@ -69,7 +66,7 @@ public class KontrolaZprav {
 			if (pomData.length > 2)
 				return false;
 			break;
-		case "Logout":
+		case "LogOut":
 			if (pomData.length > 2)
 				return false;
 			try {
@@ -112,34 +109,33 @@ public class KontrolaZprav {
 			return false;
 
 		switch (pomData[1]) {
-		case "poleReady":
-
-			if (pomData.length > 2) {
+		case "challenger":
+			if (pomData.length > 3) {
 				return false;
 			}
 			break;
 
-		case "pripravena":
+		case "opponent":
 
-			if (pomData.length > 2) {
+			if (pomData.length > 3) {
 				return false;
 			}
 			break;
-		case "hraj":
+		case "play":
 
-			if (pomData.length > 2) {
+			if (pomData.length > 3) {
 				return false;
 			}
 			break;
 
 		case "miss":
 
-			if (pomData.length > 2) {
+			if (pomData.length > 3) {
 				return false;
 			}
 			break;
 			
-		case "tah":
+		case "shot":
 			if (pomData.length > 3) {
 				return false;
 			}
@@ -166,7 +162,7 @@ public class KontrolaZprav {
 			}
 			break;
 			
-		case "trefa":
+		case "hit":
 			if (pomData.length > 3)
 				return false;
 
@@ -184,7 +180,7 @@ public class KontrolaZprav {
 
 			return false;
 			
-		case "zniceno":
+		case "destroyed":
 			if (pomData.length > 3) {
 				return false;
 			}
@@ -198,7 +194,6 @@ public class KontrolaZprav {
 			if(pomData[2].equals(TypyTanku.MT.toString())) {
 				return true;
 			} 
-			
 			if( pomData[2].equals(TypyTanku.TD.toString())){
 				return true;
 			} 

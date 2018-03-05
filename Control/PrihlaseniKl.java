@@ -68,8 +68,8 @@ public void provedAkciNaPozvani(String jmeno) {
 		volba = sc.nextInt();
 		
 	} catch (Exception e) {
-		
 		System.out.println("Pro potvrzeni volby musite stisknout cislo.");
+		sc.nextLine();
 		provedAkciNaPozvani(jmeno);
 		return;
 	}

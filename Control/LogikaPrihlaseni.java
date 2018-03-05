@@ -73,7 +73,7 @@ public class LogikaPrihlaseni {
 	 */
 	public String createRegMessage(String jmeno, String heslo){
 		
-		return "Registrace," + jmeno + "," + hashPassword(heslo) + "\n" ; 
+		return "Registration," + jmeno + "," + hashPassword(heslo) + "\n" ; 
 		
 	}
 	

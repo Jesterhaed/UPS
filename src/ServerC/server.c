@@ -380,8 +380,7 @@ void send_message(User_conected* user, char* message) {
 void invalid_input(User_conected* user) {
 
 	printf("Nevalidni vstup\n");
-	send_message(user, "Nevalidni vstup\n");
-	printf("Ukoncuji spojeni \n");
+	send_message(user, "InvalidInput\n");
 
 }
 /*
@@ -393,7 +392,7 @@ void invalid_input(User_conected* user) {
 int nickname_control(char* nickname, User_conected* user) {
 
 	if (strlen(nickname) > 30 || strlen(nickname) == 0) {
-		send_message(user, "Registrace,no,invalid_nickname\n");
+		send_message(user, "Registration,no,invalid_nickname\n");
 		return 0;
 	}
 	return 1;
@@ -406,7 +405,7 @@ int nickname_control(char* nickname, User_conected* user) {
 */
 int passwd_control(char* passwd, User_conected* user) {
 	if (strlen(passwd) > 32 || strlen(passwd) < 32 || strlen(passwd) == 0) {
-		send_message(user, "Registrace,no,invalid_passwd\n");
+		send_message(user, "Registration,no,invalid_passwd\n");
 		return 0;
 	}
 	return 1;
@@ -445,7 +444,7 @@ void reg_user(char* buffer, User_conected* user) {
 		if (database_users[i] != NULL
 			&& strcmp(database_users[i]->nickname, buffer) == 0) {
 
-			send_message(user, "Registrace,no,used_nick\n");
+			send_message(user, "Registration,no,used_nick\n");
 			pthread_mutex_unlock(&lock);
 			return;
 
@@ -470,7 +469,7 @@ void reg_user(char* buffer, User_conected* user) {
 			}
 		}
 
-		send_message(user, "Registrace,yes,success\n");
+		send_message(user, "Registration,yes,success\n");
 		sprintf(pom, "Registrace uzivatele: %s\n", reg_user->nickname);
 		write_log(pom);
 	}
@@ -828,7 +827,7 @@ void pole_ready(User_conected* user) {
 
 	if (user->game != NULL) {
 		Game* game1 = user->game;
-		send_message(conected_users[game1->gamer1], "Game,poleReady,\n");
+		send_message(conected_users[game1->gamer1], "Game,opponent,ready\n");
 
 	}
 
@@ -843,7 +842,7 @@ void spust_souboj(User_conected* user) {
 
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-	strcpy(message, "Game,pripravena,\n");
+	strcpy(message, "Game,challenger,ready\n");
 
 
 
@@ -859,37 +858,30 @@ void spust_souboj(User_conected* user) {
 
 void preposli_tah(User_conected* user, char* message1) {
 
-	char *ret3 = strchr(message1, ',');
-
 	char* pom = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-
-	if (ret3 != NULL) {
-		*ret3 = '\0';
-		ret3++;
-	}
-	else {
+	if (message1 == NULL) {
 		invalid_input(user);
 		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message1);
 		write_log(pom);
 	}
+
 
 	if (user->game != NULL) {
 
 		Game* game1 = user->game;
 		char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-		strcpy(message, "Game,tah,");
+		strcpy(message, "Game,shot,");
 		message = strcat(message, message1);
 
-		message = strcat(message, ",\n");
+		message = strcat(message, "\n");
 
 		if (game1->tah_vyzivatel != 1) {
 			send_message(conected_users[game1->gamer1], message);
 		}
 		else {
 			send_message(conected_users[game1->gamer2], message);
-
 		}
 	}
 }
@@ -903,16 +895,9 @@ void preposli_tah(User_conected* user, char* message1) {
 */
 void tank_trefen(User_conected* user, char* message1) {
 
-	char *ret3 = strchr(message1, ',');
-
 	char* pom = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-
-	if (ret3 != NULL) {
-		*ret3 = '\0';
-		ret3++;
-	}
-	else {
+	if (message1 == NULL) {
 		invalid_input(user);
 		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message1);
 		write_log(pom);
@@ -920,21 +905,19 @@ void tank_trefen(User_conected* user, char* message1) {
 
 	if (user->game != NULL) {
 
-
 		Game* game1 = user->game;
 		char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-		strcpy(message, "Game,trefa,");
+		strcpy(message, "Game,hit,");
 		message = strcat(message, message1);
 
-		message = strcat(message, ",\n");
+		message = strcat(message, "\n");
 
 		if (game1->tah_vyzivatel == 1) {
 			send_message(conected_users[game1->gamer1], message);
 		}
 		else {
 			send_message(conected_users[game1->gamer2], message);
-
 		}
 	}
 }
@@ -943,13 +926,7 @@ void tank_trefen(User_conected* user, char* message1) {
 void tank_znicen(User_conected* user, char* message1) {
 	char* pom = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-	char *ret3 = strchr(message1, ',');
-
-	if (ret3 != NULL) {
-		*ret3 = '\0';
-		ret3++;
-	}
-	else {
+	if (message1 == NULL) {
 		invalid_input(user);
 		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message1);
 		write_log(pom);
@@ -961,7 +938,7 @@ void tank_znicen(User_conected* user, char* message1) {
 		Game* game1 = user->game;
 		char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-		strcpy(message, "Game,zniceno,");
+		strcpy(message, "Game,destroyed,");
 		message = strcat(message, message1);
 
 		message = strcat(message, "\n");
@@ -981,18 +958,16 @@ void tank_znicen(User_conected* user, char* message1) {
 void pole_netrefeno(User_conected* user) {
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-	strcpy(message, "Game,miss,\n");
+	strcpy(message, "Game,miss,tank\n");
 
 	if (user->game != NULL) {
 		Game* game1 = user->game;
 
 		if (game1->tah_vyzivatel == 1) {
 			send_message(conected_users[game1->gamer1], message);
-
 		}
 		else {
 			send_message(conected_users[game1->gamer2], message);
-
 		}
 	}
 }
@@ -1002,7 +977,7 @@ void pole_netrefeno(User_conected* user) {
 void zmena_hrace(User_conected* user) {
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
-	strcpy(message, "Game,hraj,\n");
+	strcpy(message, "Game,play,game\n");
 	if (user->game != NULL) {
 		Game* game1 = user->game;
 
@@ -1033,9 +1008,9 @@ void logout_user(User_conected* user, char* ret2) {
 	if (user->game != NULL) {
 		if (user->game->free == 1) {
 			sprintf(pom, "%d", user->game->id);
-			strcpy(message, "Logout,");
+			strcpy(message, "LogOut,");
 			strcat(message, pom);
-			strcat(message, ",\n");
+			strcat(message, "\n");
 			user->isLog = 0;
 			int index;
 
@@ -1053,18 +1028,11 @@ void logout_user(User_conected* user, char* ret2) {
 		else {
 			printf("user %s  ", user->nickname);
 			user->isLog = 0;
-
 		}
-
 	}
 	else {
 		printf("user %s  ", user->nickname);
 		user->isLog = 0;
-	}
-	char *ret3 = strchr(ret2, ',');
-	if (ret3 != NULL) {
-		*ret3 = '\0';
-		ret3++;
 	}
 
 	if (strcmp(ret2, "end") == 0) {
@@ -1074,7 +1042,6 @@ void logout_user(User_conected* user, char* ret2) {
 		write_log("Server ukoncil vlakno. \n");
 		pthread_join(pthread_self(), PTHREAD_CANCELED);
 	}
-
 }
 
 /*
@@ -1120,7 +1087,6 @@ void delete_game_end(User_conected* user) {
 
 	int id;
 
-
 	if (user->game != NULL) {
 
 		Game* game1 = user->game;
@@ -1137,13 +1103,11 @@ void delete_game_end(User_conected* user) {
 			conected_users[id2]->game = NULL;
 			conected_users[id2]->game = NULL;
 		}
-
 	}
 
 	free(game[id]);
 	game[id] = NULL;
 }
-
 
 /*
 * receive_game(User_conected* user, char* message)
@@ -1166,38 +1130,28 @@ void receive_game(User_conected* user, char* message) {
 		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message);
 		write_log(pom);
 	}
-	if (strcmp(message, "poleReady") == 0) {
+	if (strcmp(message, "opponent") == 0) {
 		pole_ready(user);
-
 	}
-	else if (strcmp(message, "pripravena") == 0) {
+	else if (strcmp(message, "challenger") == 0) {
 		spust_souboj(user);
-
 	}
-	else if (strcmp(message, "tah") == 0) {
+	else if (strcmp(message, "shot") == 0) {
 		preposli_tah(user, ret3);
-
 	}
-	else if (strcmp(message, "trefa") == 0) {
-
+	else if (strcmp(message, "hit") == 0) {
 		tank_trefen(user, ret3);
-
 	}
-	else if (strcmp(message, "zniceno") == 0) {
-
+	else if (strcmp(message, "destroyed") == 0) {
 		tank_znicen(user, ret3);
-
 	}
 	else if (strcmp(message, "miss") == 0) {
 		pole_netrefeno(user);
-
 	}
-	else if (strcmp(message, "hraj") == 0) {
-
+	else if (strcmp(message, "play") == 0) {
 		zmena_hrace(user);
 	}
-	else if (strcmp(message, "endGame") == 0) {
-
+	else if (strcmp(message, "end") == 0) {
 		delete_game_end(user);
 	}
 	else {
@@ -1217,16 +1171,9 @@ int control_player_list(char* message) {
 
 void delete_game(User_conected* user, char* message) {
 
-	printf("Delete game");
-
 	long val;
 	char *next;
-	char *ret = strchr(message, ',');
 
-	if (ret != NULL) {
-		*ret = '\0';
-		ret++;
-	}
 	val = strtol(message, &next, 10);
 	if (val > COUNT_Game || (next == address) || (*next != '\0') || val < 0) {
 		invalid_input(user);
@@ -1262,6 +1209,7 @@ void delete_game(User_conected* user, char* message) {
 
 	free(game[i]);
 	game[i] = NULL;
+	printf("Smazani rozehrane hry.\n");
 }
 
 
@@ -1307,31 +1255,27 @@ void *createThread(void *incoming_socket) {
 		}
 
 
-		if (strcmp(buffer, "Registrace") == 0) {
+		if (strcmp(buffer, "Registration") == 0) {
 
 			reg_user(ret2, user);
 
 
 		}
 		else if (strcmp(buffer, "CheckConnect") == 0) {
-
-			send_message(user, "CheckConnect,\n");
+			send_message(user, "CheckConnect,good\n");
 			sleep(1);
 
 		}
 		else if (strcmp(buffer, "DeleteGame") == 0) {
-
 			delete_game(user, ret2);
 		}
 		else if (strcmp(buffer, "Log") == 0) {
 			log_control(user, ret2);
 		}
 		else if (strcmp(buffer, "LogOut") == 0) {
-
 			if (user->protihracLogOut != 1) {
 				logout_user(user, ret2);
 			}
-
 		}
 		else if (strcmp(buffer, "PlayerList") == 0) {
 			if (control_player_list(ret2) == 1) {
@@ -1347,9 +1291,7 @@ void *createThread(void *incoming_socket) {
 		}
 		else if (strcmp(buffer, "Game") == 0) {
 			if (user->protihracLogOut != 1) {
-
 				receive_game(user, ret2);
-
 			}
 
 		}

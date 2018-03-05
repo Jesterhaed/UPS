@@ -91,7 +91,7 @@ public class TCPComm implements ITCP, Runnable {
 
 				} catch (SocketTimeoutException e) {
 
-					send("CheckConnect,\n");
+					send("CheckConnect,good\n");
 				//	System.err.println("Caught TimeoutException: " + counterTimeOUt + " " + e.getMessage());
 
 					if (counterTimeOUt > 0) {

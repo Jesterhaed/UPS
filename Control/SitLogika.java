@@ -109,62 +109,36 @@ public class SitLogika {
 
 	}
 
-	/**
-	 * Zprava o prohre vyzivatele
-	 */
-	public void sendGameOver() {
-
-		comm.send("Game,gameOver,\n");
-
-	}
-
-	/**
-	 * Zprava o vyhre vyzivatele
-	 */
-	public void sendGameDone() {
-
-		comm.send("Game,gameDone,\n");
-	}
-
 	public void sendHraciPoleReady() {
-
-		comm.send("Game,poleReady,\n");
+		comm.send("Game,opponent,ready\n");
 	}
 
 	public void sendTah(String umisteni) {
-
-		comm.send("Game,tah," + umisteni + ",\n");
+		comm.send("Game,shot," + umisteni + "\n");
 	}
 
 	public void sendHraPripravena() {
-
-		comm.send("Game,pripravena,\n");
-
+		comm.send("Game,challenger,ready\n");
 	}
 	
 	public void sendTrefa(int odecet) {
-		comm.send("Game,trefa," + odecet + ",\n");
-		
+		comm.send("Game,hit," + odecet + "\n");
 	}
 
 	public void sendZniceno(String tank) {
-		comm.send("Game,zniceno," + tank + ",\n");
-		
+		comm.send("Game,destroyed," + tank + "\n");
 	}
 	
 	public void sendHraj() {
-		comm.send("Game,hraj,\n");
-		
+		comm.send("Game,play,game\n");
 	}
 		
 	public void sendMiss() {
-		comm.send("Game,miss,\n");
-		
+		comm.send("Game,miss,tank\n");
 	}
 	
 	public void sendEndGame() {
-		comm.send("Game,endGame,\n");
-		
+		comm.send("Game,end,game\n");
 	}
 
 	/**
@@ -173,7 +147,7 @@ public class SitLogika {
 	 * @param game
 	 */
 	public void deleteGameLeave(int game) {
-		comm.send("DeleteGame," + game + ",both\n");
+		comm.send("DeleteGame," + game + "\n");
 
 	}
 
