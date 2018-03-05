@@ -9,8 +9,6 @@ import Control.SitLogika;
 import Control.KomukiaceServeru;
 import Interfaces.ITCP;
 import Network.TCPComm;
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 public class TanksRun{
 
@@ -33,16 +31,18 @@ public class TanksRun{
 	
 	public TanksRun() {
 		
-		   Signal.handle(new Signal("INT"), new SignalHandler() {
-	            public void handle(Signal sig) {
-	                System.out.format("\nUkonceni programu.\n");
+		   Runtime.getRuntime().addShutdownHook(new Thread()
+	        {
+	            @Override
+	            public void run()
+	            {
+	                System.out.format("\nUkonceni programu.");
 	                if (logLogics.isLog()) {
 						netLog.signOutUser("LogOut,end\n");
 					}
-	                System.exit(0);
-	            }
+	                comm.endThread();
+	            }	            
 	        });
-		
 		
 		this.logLogics = new LogikaPrihlaseni(this);
 		this.netLog = new SitLogika(this, logLogics);

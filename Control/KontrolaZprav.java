@@ -72,12 +72,10 @@ public class KontrolaZprav {
 			try {
 				int pom = Integer.parseInt(pomData[1]);
 			} catch (NumberFormatException e) {
-
 				return false;
 			}
 			break;
 		case "Challenge":
-
 			if (pomData[2].equals("invite") || pomData[2].equals("refuse") || pomData[2].equals("accept")) {
 				if (pomData.length > 3)
 					return false;
