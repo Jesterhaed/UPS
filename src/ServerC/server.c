@@ -261,7 +261,7 @@ int str_cut(char *str, int begin, int len) {
 * Nacte zpravu
 */
 int sgetline(int fd, char ** out) {
-	int buf_size = 1024;
+	int buf_size = 4096;
 	int bytesloaded = 0;
 	int ret;
 	int i = 0;
@@ -271,7 +271,7 @@ int sgetline(int fd, char ** out) {
 
 	if (NULL == buffer)
 		return -1;
-	while (i != 1023) {
+	while (i != 4095) {
 		// read a single byte
 		ret = read(fd, &buf, 1);
 
@@ -525,39 +525,6 @@ int is_bad_loggin(char* log) {
 }
 
 /*
-* send_player(Game* game, User_conected* user)
-*
-* Posle jmeno hrace se kterym ma uzivatel aktualne rozehranou hru
-*
-*/
-void send_player(Game* game, User_conected* user) {
-
-	char* player = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
-
-	strcpy(player, "Game,player,");
-
-	if (strcmp(conected_users[game->gamer1]->nickname, user->nickname) == 0) {
-
-		strcat(player, "challenger,");
-		strcat(player, conected_users[game->gamer1]->nickname);
-		strcat(player, "\n");
-
-	}
-	else {
-
-		strcat(player, "challenger,");
-		strcat(player, conected_users[game->gamer2]->nickname);
-		strcat(player, "\n");
-
-	}
-
-	send_message(user, player);
-
-	sleep(1);
-}
-
-
-/*
 * log_control(User_conected* user, char* buffer)
 *
 * Provede kontrolu prihlasujiciho se uzivatele
@@ -784,14 +751,10 @@ void send_accept_chellange(User_conected* user, char* player) {
 				message = strcat(finish, ",accept\n");
 				send_message(conected_users[i], message);
 			}
-
 		}
-
 	}
-
 	//free(message);
 	//free(finish);
-
 }
 
 /*
@@ -826,25 +789,21 @@ void send_refuse_chellange(User_conected* user, char* player) {
 }
 
 /*
-* result_to_game(User_conected* user, char* message1)
+* pole_ready(User_conected* user)
 *
-* Odesle vyzivateli informaci o hledanem vysledku
+* Odesle vyzivateli informaci o pripravenosti protihrace
 *
 */
 void pole_ready(User_conected* user) {
-
-
 	if (user->game != NULL) {
 		Game* game1 = user->game;
 		send_message(conected_users[game1->gamer1], "Game,opponent,ready\n");
-
 	}
-
 }
 /*
-* good_color_to_game(User_conected* user, char* message1)
+* spust_souboj(User_conected* user)
 *
-* Odesle druhemu hraci informaci o uhodnutych barvach v tahu
+* Odesle druhemu hraci informaci o pripravenosti vyzivatele
 *
 */
 void spust_souboj(User_conected* user) {
@@ -852,8 +811,6 @@ void spust_souboj(User_conected* user) {
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
 	strcpy(message, "Game,challenger,ready\n");
-
-
 
 	if (user->game != NULL) {
 
@@ -874,7 +831,6 @@ void preposli_tah(User_conected* user, char* message1) {
 		sprintf(pom, "Prijata zprava :%s nevalidni vstup \n", message1);
 		write_log(pom);
 	}
-
 
 	if (user->game != NULL) {
 
@@ -897,9 +853,9 @@ void preposli_tah(User_conected* user, char* message1) {
 
 
 /*
-* good_color_to_game(User_conected* user, char* message1)
+* tank_trefen(User_conected* user, char* message1)
 *
-* Odesle druhemu hraci informaci o uhodnutych pozicich barev v tahu
+* Odesle druhemu hraci informaci o zasahu
 *
 */
 void tank_trefen(User_conected* user, char* message1) {
@@ -931,6 +887,12 @@ void tank_trefen(User_conected* user, char* message1) {
 	}
 }
 
+/*
+* tank_znicen(User_conected* user, char* message1)
+*
+* Odesle druhemu hraci informaci o zniceni tanku
+*
+*/
 
 void tank_znicen(User_conected* user, char* message1) {
 	char* pom = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
@@ -963,7 +925,12 @@ void tank_znicen(User_conected* user, char* message1) {
 	}
 }
 
-
+/*
+* pole_netrefeno(User_conected* user)
+*
+* Odesle druhemu hraci informaci netrefeni
+*
+*/
 void pole_netrefeno(User_conected* user) {
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
@@ -981,8 +948,12 @@ void pole_netrefeno(User_conected* user) {
 	}
 }
 
-
-
+/*
+* zmena_hrace(User_conected* user)
+*
+* Odesle druhemu hraci informaci o tom, ze hraje
+*
+*/
 void zmena_hrace(User_conected* user) {
 	char* message = (char*)malloc(MAX_CONECTED * 30 + MAX_CONECTED);
 
@@ -1004,7 +975,7 @@ void zmena_hrace(User_conected* user) {
 
 
 /*
-* leave_game(User_conected* user)
+* logout_user(User_conected* user, char* ret2)
 *
 * Odesle druhemu hraci informaci o opusteni hry po odhlaseni
 *
@@ -1233,8 +1204,8 @@ void delete_game(User_conected* user, char* message) {
 */
 void *createThread(void *incoming_socket) {
 
-	char* buffer = malloc(1024);
-	char* pom = (char*)malloc(1024);
+	char* buffer = malloc(4096);
+	char* pom = (char*)malloc(4096);
 
 	int socket = *(int *)incoming_socket;
 	User_conected* user = put_user(socket);
@@ -1252,6 +1223,13 @@ void *createThread(void *incoming_socket) {
 		}
 
 		printf("obsah  %s \n", buffer);
+
+		if (ret > 77){
+			/* maximalni delka platne zpravy*/
+			invalid_input(user);
+			break;
+		}
+
 		char *ret2 = strchr(buffer, ',');
 
 		if (ret2 != NULL) {
@@ -1311,6 +1289,7 @@ void *createThread(void *incoming_socket) {
 		}
 
 	}
+	printf("Ukonceni spojeni.\n");
 
 	free(pom);
 	pom = NULL;
@@ -1468,6 +1447,7 @@ int main(int argc, char** argv) {
 
 		/* create a second thread which executes inc_x(&x) */
 		if (pthread_create(&thread, NULL, createThread, &incoming_sock)) {
+
 
 			fprintf(stderr, "Chyba pri vytvareni vlakna.\n");
 			write_log("Chyba serveru \"creating thread\" \n ");

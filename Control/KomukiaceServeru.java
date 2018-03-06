@@ -47,8 +47,6 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 
 //	System.out.println("Data: " + data + " : " + netLogic.getName());
 	
-		
-		
 		if (!messageCon.is_valid(data)) {
 			
 			System.out.println("Nevalidni vstup!");
@@ -60,7 +58,6 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 			return;
 		}
 
-		
 		String[] pomData = data.split(",");
 
 		switch (pomData[0]) {
@@ -93,7 +90,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 
 			break;
 		case "LogOut":
-			System.out.println("Hrac" + netLogic.getName() +  "opustil hru.");			
+			System.out.println("Hrac " + netLogic.getName() +  " opustil hru.");			
 			netLogic.deleteGameLeave(Integer.parseInt(pomData[1]));
 			gameControl.vynuluj_hru();
 			System.out.println("Budete presmerovan na vyber jineho hrace.");
@@ -141,7 +138,6 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 		}
 		
 		netLogic.createGame(hraci.get(pom));
-
 		
 	}
 
