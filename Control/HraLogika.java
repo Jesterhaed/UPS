@@ -85,7 +85,7 @@ public class HraLogika {
 			udelejTah();
 		}
 		else {
-//			System.out.println("Vsechny tanky rozmisteny, pockejte na zapoceti hry.");
+			System.out.println("Vsechny tanky rozmisteny, pockejte na zapoceti hry.");
 		}
 	}
 
