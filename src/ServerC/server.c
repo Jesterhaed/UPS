@@ -582,27 +582,36 @@ void log_control(User_conected* user, char* buffer) {
 		invalid_input(user);
 		return;
 	}
-
+	int isLog = 0;
 	int i = 0;
 	for (i = 0; i < MAX_CONECTED; ++i) {
 
 		if (database_users[i] != NULL) {
 			if (strcmp(database_users[i]->nickname, buffer) == 0
 				&& strcmp(database_users[i]->passwd, ret) == 0) {
-
+				int j;
+				for (j = 0; j < MAX_CONECTED; ++j) {
+					if (conected_users[j] != NULL && strcmp(conected_users[j]->nickname, buffer) == 0 && conected_users[j]->isLog == 1) {
+						isLog = 1;
+						break;
+					}
+				}
+				if (isLog == 1){
+					send_message(user, "Log,no,bad_use\n");
+					break;
+				}
 				user->isLog = 1;
 				strcpy(user->nickname, buffer);
 				send_message(user, "Log,yes,success\n");
 
 				sprintf(pom, "Prihlaseny uzivatel: %s\n", user->nickname);
 				write_log(pom);
-
 				break;
 			}
 		}
 	}
 
-	if (user->isLog == 0) {
+	if (user->isLog == 0 && isLog == 0) {
 		if (is_bad_loggin(buffer) == 0) {
 			send_message(user, "Log,no,bad_log\n");
 		}
@@ -1293,7 +1302,6 @@ void *createThread(void *incoming_socket) {
 			if (user->protihracLogOut != 1) {
 				receive_game(user, ret2);
 			}
-
 		}
 		else {
 			invalid_input(user);

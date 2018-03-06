@@ -194,7 +194,11 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 			else if (pomData[2].contains("bad_passwd")) {
 				System.out.println("Spatne heslo.");
 				tR.regOrLog();
-			}				
+			}
+			else if (pomData[2].contains("bad_use")) {
+				System.out.println("Tento uzivatel je jiz prihlasen.");
+				tR.regOrLog();
+			}
 		} else {				
 			tR.regOrLog();
 		}
