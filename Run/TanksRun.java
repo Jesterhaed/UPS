@@ -36,7 +36,7 @@ public class TanksRun{
 	            @Override
 	            public void run()
 	            {
-	                System.out.format("\nUkonceni programu.");
+	                System.out.format("\nUkonceni programu.\n");
 	                if (logLogics.isLog()) {
 						netLog.signOutUser("LogOut,end\n");
 					}

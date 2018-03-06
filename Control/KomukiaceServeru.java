@@ -214,7 +214,7 @@ public class KomukiaceServeru implements IKomunikaceServeru {
 			
 		} else if (pomData[1].contains("challenger")) {
 
-			System.out.println("Hraje vyzivatel, pockejte na jeho tah.");
+			System.out.println("Hraje vyzyvatel, pockejte na jeho tah.");
 		
 		} else if (pomData[1].contains("shot")) {
 

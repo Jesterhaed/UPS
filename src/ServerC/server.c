@@ -1016,9 +1016,9 @@ void logout_user(User_conected* user, char* ret2) {
 	}
 
 	if (strcmp(ret2, "end") == 0) {
-	free(pom);
-	free(pom1);
-
+		free(pom);
+		free(pom1);
+		printf("Server ukoncil vlakno. \n");
 		write_log("Server ukoncil vlakno. \n");
 		pthread_join(pthread_self(), PTHREAD_CANCELED);
 	}
@@ -1111,7 +1111,9 @@ void receive_game(User_conected* user, char* message) {
 		write_log(pom);
 	}
 	if (strcmp(message, "opponent") == 0) {
+		printf("Zprava od oponenta prijata. \n");
 		pole_ready(user);
+		printf("Zprava od oponenta predana. \n");
 	}
 	else if (strcmp(message, "challenger") == 0) {
 		spust_souboj(user);
@@ -1271,6 +1273,7 @@ void *createThread(void *incoming_socket) {
 			}
 			send_free_players(user);
 
+			user->protihracLogOut = 0;
 		}
 		else if (strcmp(buffer, "Challenge") == 0) {
 			receive_challenge(user, ret2);
@@ -1297,7 +1300,6 @@ void *createThread(void *incoming_socket) {
 	buffer = NULL;
 	pull_user(user);
 	close(socket);
-	socket = NULL;
 
 	return NULL;
 }
@@ -1436,7 +1438,6 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
-		char* message = "Connect\n";
 		printf("Spojeni od %s:%i\n", inet_ntoa(incoming_addr.sin_addr),
 			ntohs(incoming_addr.sin_port));
 		sprintf(pom, "Spojeni od %s:%i\n", inet_ntoa(incoming_addr.sin_addr), ntohs(incoming_addr.sin_port));
