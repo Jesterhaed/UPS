@@ -1111,9 +1111,7 @@ void receive_game(User_conected* user, char* message) {
 		write_log(pom);
 	}
 	if (strcmp(message, "opponent") == 0) {
-		printf("Zprava od oponenta prijata. \n");
 		pole_ready(user);
-		printf("Zprava od oponenta predana. \n");
 	}
 	else if (strcmp(message, "challenger") == 0) {
 		spust_souboj(user);
